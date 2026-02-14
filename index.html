@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Mahjong Slot</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🀄 BLUE MAHJONG SLOT</h1>
+
+    <div class="topbar">
+        <div>💰 Coin: <span id="coin">1000</span></div>
+        <div>🎁 Free: <span id="free">0</span></div>
+        <div>🏆 High: <span id="high">1000</span></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div class="controls">
+        Bet:
+        <select id="bet">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+
+        Volatility:
+        <select id="vol">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+        </select>
+
+        <button id="spinBtn">SPIN</button>
+        <button id="autoBtn">AUTO</button>
+    </div>
+
+    <div class="info" id="info"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
