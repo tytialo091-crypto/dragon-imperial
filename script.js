@@ -3,6 +3,7 @@ const symbols = [
     "assets/icons/bell.png", "assets/icons/diamond.png", "assets/icons/clover.png"
 ];
 
+// Pastikan file ini ada di folder assets/sounds/
 const sounds = {
     bgm: new Audio('assets/sounds/bgm.mp3'),
     spin: new Audio('assets/sounds/spin.mp3'),
@@ -13,13 +14,13 @@ sounds.bgm.loop = true;
 
 let balance = 100000;
 let currentBet = 100;
-let jpVal = 5000000;
 let isSpinning = false;
 
 document.getElementById("startBtn").addEventListener("click", () => {
     document.getElementById("overlay").style.display = "none";
     document.getElementById("mainGame").style.display = "flex";
-    sounds.bgm.play().catch(e => {});
+    // Play BGM setelah klik
+    sounds.bgm.play().catch(e => console.log("Audio diblokir browser"));
     initGrid();
 });
 
@@ -38,7 +39,6 @@ function startSpin() {
     if(isSpinning || balance < currentBet) return;
     isSpinning = true;
     balance -= currentBet;
-    jpVal += Math.floor(currentBet * 0.1);
     document.getElementById("winDisplay").innerText = "0";
     updateUI();
     
@@ -77,7 +77,7 @@ function checkWin() {
 
     if (winSrcs.length > 0) {
         sounds.win.currentTime = 0;
-        sounds.win.play();
+        sounds.win.play().catch(() => {});
         dragon.classList.add("power-up");
 
         items.forEach(item => {
@@ -86,7 +86,6 @@ function checkWin() {
 
         setTimeout(() => {
             if(winAmount >= currentBet * 10) showJackpot(winAmount);
-
             items.forEach(item => {
                 if(item.classList.contains("win-glow")) {
                     item.classList.remove("win-glow");
@@ -106,7 +105,7 @@ function checkWin() {
 }
 
 function showJackpot(amt) {
-    sounds.jackpot.play();
+    sounds.jackpot.play().catch(() => {});
     document.getElementById("jpAmount").innerText = amt.toLocaleString();
     document.getElementById("jpOverlay").style.display = "flex";
 }
@@ -114,7 +113,6 @@ function showJackpot(amt) {
 function closeJP() { document.getElementById("jpOverlay").style.display = "none"; }
 function updateUI() {
     document.getElementById("balance").innerText = balance.toLocaleString();
-    document.getElementById("jpDisplay").innerText = jpVal.toLocaleString();
 }
 function changeBet(v) {
     if(!isSpinning) {
@@ -122,8 +120,16 @@ function changeBet(v) {
         document.getElementById("betDisplay").innerText = "BET: " + currentBet;
     }
 }
-document.getElementById("spinBtn").addEventListener("click", startSpin);
+
+// Tombol BGM
 document.getElementById("muteBtn").addEventListener("click", (e) => {
-    if(sounds.bgm.paused) { sounds.bgm.play(); e.target.innerText = "🔊"; }
-    else { sounds.bgm.pause(); e.target.innerText = "🔇"; }
+    if(sounds.bgm.paused) {
+        sounds.bgm.play().catch(() => alert("Klik layar dulu!"));
+        e.target.innerText = "🔊";
+    } else {
+        sounds.bgm.pause();
+        e.target.innerText = "🔇";
+    }
 });
+
+document.getElementById("spinBtn").addEventListener("click", startSpin);
