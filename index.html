@@ -2,36 +2,45 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Dragon Imperial Platinum</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="transitionOverlay" class="smoke-overlay"></div>
 
-    <div id="loginOverlay" class="modal-overlay">
+    <div id="loginOverlay" class="login-bg">
         <div class="login-box">
             <img src="assets/logo.png" alt="Dragon Logo" class="login-logo">
-            <input type="text" id="usernameInput" placeholder="Masukkan Username...">
+            <input type="text" id="usernameInput" placeholder="USERNAME...">
             <button class="primary-btn" onclick="handleLogin()">MULAI BERMAIN</button>
+            <p class="version-tag">V1.0 PLATINUM EDITION</p>
         </div>
     </div>
 
-    <div id="adminPanel" class="modal-overlay" style="display:none; z-index: 9999;">
+    <div id="adminPanel" class="modal-overlay" style="display:none; z-index: 10000;">
         <div class="modal-content admin-box">
-            <h3 style="color: #ff4444;">DRAGON ADMIN PANEL</h3>
+            <h3>ADMIN PANEL</h3>
             <div class="admin-group">
-                <label>MODIFIKASI SALDO</label>
+                <label>SET SALDO</label>
                 <input type="number" id="setSaldoInput" placeholder="Jumlah...">
-                <button onclick="adminSetSaldo()">SET SALDO</button>
+                <button onclick="adminSetSaldo()">UPDATE</button>
             </div>
             <div class="admin-group">
-                <label>CHEATS & VISUAL</label>
-                <button onclick="changeModeWithSmoke(false)">NORMAL MODE</button>
-                <button onclick="changeModeWithSmoke(true)" style="background: #400;">FREE SPIN MODE</button>
-                <button onclick="adminTriggerMaxwin()" style="background: linear-gradient(gold, orange); color:black;">🔥 AUTO MAXWIN</button>
+                <label>VISUAL TEST</label>
+                <button onclick="changeModeWithSmoke(false)">NORMAL</button>
+                <button onclick="changeModeWithSmoke(true)" style="background:#400;">FREE SPIN</button>
+                <button onclick="adminTriggerMaxwin()" style="background:gold; color:#000;">🔥 AUTO MAXWIN</button>
             </div>
             <button class="close-btn" onclick="toggleAdminPanel()">TUTUP</button>
+        </div>
+    </div>
+
+    <div id="paytableOverlay" class="modal-overlay" style="display:none; z-index: 9998;">
+        <div class="modal-content paytable-box">
+            <h3 style="color:gold">PAYTABLE (1024 WAYS)</h3>
+            <div class="paytable-grid" id="paytableList"></div>
+            <button class="close-btn" onclick="togglePaytable()">TUTUP</button>
         </div>
     </div>
 
@@ -42,8 +51,7 @@
                 <div class="profile-details">
                     <div id="userNameDisplay">-</div>
                     <div class="level-container">
-                        <span class="level-badge">LV.<b id="userLevel">1</b></span>
-                        <div class="exp-track"><div id="expFill"></div></div>
+                        <span>LV.<b id="userLevel">1</b></span>
                     </div>
                 </div>
             </div>
@@ -53,20 +61,18 @@
         <div class="grid-container" id="grid"></div>
 
         <div id="autoPanel" class="auto-menu" style="display:none;">
-            <div class="auto-menu-content">
-                <h4>AUTO SPIN</h4>
-                <div class="auto-options">
-                    <button onclick="setupAuto(10)">10</button>
-                    <button onclick="setupAuto(20)">20</button>
-                    <button onclick="setupAuto(100)">100</button>
-                    <button onclick="setupAuto(999999)">∞</button>
-                </div>
-                <div class="auto-custom">
-                    <input type="number" id="customAutoInput" placeholder="Manual...">
-                    <button onclick="setupAuto('custom')">SET</button>
-                </div>
-                <button class="close-auto" onclick="toggleAutoPanel()">BATAL</button>
+            <h4>AUTO SPIN</h4>
+            <div class="auto-options">
+                <button onclick="setupAuto(10)">10</button>
+                <button onclick="setupAuto(20)">20</button>
+                <button onclick="setupAuto(100)">100</button>
+                <button onclick="setupAuto(999999)">∞</button>
             </div>
+            <div class="auto-custom">
+                <input type="number" id="customAutoInput" placeholder="Manual...">
+                <button onclick="setupAuto('custom')">SET</button>
+            </div>
+            <button class="close-auto" onclick="toggleAutoPanel()">BATAL</button>
         </div>
 
         <div class="footer">
@@ -81,35 +87,36 @@
                 </div>
             </div>
 
-            <div class="main-controls">
-                <div class="spin-section">
+            <div class="control-container">
+                <div class="left-controls">
                     <button id="spinBtn" onclick="startSpin()">SPIN</button>
-                    <div class="auto-wrap">
+                    <div class="auto-wrapper">
                         <button id="autoOpenBtn" onclick="toggleAutoPanel()">AUTO</button>
-                        <span id="autoStatus" style="display:none; color:gold; font-size:10px;"></span>
+                        <div id="autoStatus" style="display:none;"></div>
                     </div>
                 </div>
 
-                <div class="bet-section">
+                <div class="center-controls">
                     <div class="bet-adjuster">
-                        <button class="circle-btn" onclick="changeBet(-25000)">−</button>
-                        <div class="bet-info">
-                            <span id="betDisplay">BET: 25k</span>
-                            <button class="max-btn-small" onclick="setMaxBet()">MAX BET</button>
+                        <button class="adjust-btn" onclick="changeBet(-25000)">−</button>
+                        <div class="bet-display-box">
+                            <span class="label-bet">BET</span>
+                            <b id="betDisplay">25k</b>
+                            <button class="max-bet-btn" onclick="setMaxBet()">MAX BET</button>
                         </div>
-                        <button class="circle-btn" onclick="changeBet(25000)">+</button>
+                        <button class="adjust-btn" onclick="changeBet(25000)">+</button>
                     </div>
                 </div>
-                
-                <div class="extra-section">
-                    <button class="info-btn" onclick="togglePaytable()">ℹ️</button>
+
+                <div class="right-controls">
+                    <button class="info-circle" onclick="togglePaytable()">i</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="bigWinOverlay" class="big-win-overlay" style="display:none;">
-        <h2>BIG WIN!</h2>
+        <h2 id="winTitle">BIG WIN!</h2>
         <div id="countDisplay">Rp 0</div>
     </div>
 
