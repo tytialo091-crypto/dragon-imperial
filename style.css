@@ -1,46 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Cinzel', serif; }
-body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-
-/* Teks Emas & Shadow */
-b, span, div, h1, label, small {
-    color: #FFD700;
-    text-shadow: 2px 2px 0px #000, -1px -1px 0px #000, 1px -1px 0px #000, -1px 1px 0px #000, 0px 0px 10px rgba(0,0,0,0.8);
-}
+body { background: #000; overflow: hidden; display: flex; justify-content: center; color: gold; }
 
 .mobile-wrapper { 
-    width: 100%; max-width: 450px; height: 100vh; position: relative;
-    background: url('assets/bg.jpg') center/cover no-repeat;
-    display: flex; flex-direction: column; padding: 10px;
+    width: 100vw; height: 100dvh; max-width: 480px; 
+    background: radial-gradient(circle, #222, #000); position: relative; 
+    display: flex; flex-direction: column; padding: 10px; justify-content: space-between;
 }
 
-/* Animasi Naga & Api */
-.dragon-bg { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; opacity: 0.15; pointer-events: none; z-index: 1; transition: 0.3s; }
-.dragon-attack { transform: translate(-50%, -50%) scale(1.1); filter: brightness(2) drop-shadow(0 0 20px red); opacity: 0.8; }
-.fire-flash { position: fixed; inset: 0; background: rgba(255, 69, 0, 0.3); pointer-events: none; z-index: 100; animation: flash 0.3s ease-out; }
-@keyframes flash { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+.grid-container { 
+    display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr);
+    gap: 4px; background: rgba(0,0,0,0.85); border: 2px solid gold; padding: 6px;
+    border-radius: 12px; height: 45vh; z-index: 5; margin: 10px 0;
+}
+.grid-item { display: flex; justify-content: center; align-items: center; }
+.grid-item img { width: 85%; height: 85%; object-fit: contain; }
 
-/* Grid & Tumble */
-.grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; background: rgba(0,0,0,0.9); border: 2px solid gold; padding: 8px; border-radius: 10px; z-index: 5; flex-grow: 1; margin: 8px 0; overflow: hidden; }
-.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.03); }
-.grid-item img { width: 85%; height: 85%; object-fit: contain; transition: 0.2s; }
-
-.symbol-falling { animation: fall 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-@keyframes fall { from { transform: translateY(-200px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* Animasi */
+.symbol-falling { animation: fall 0.4s ease-in; }
+@keyframes fall { from { transform: translateY(-150px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .symbol-explode { animation: explode 0.4s forwards; }
-@keyframes explode { 0% { transform: scale(1); } 50% { transform: scale(1.4); filter: brightness(2); } 100% { transform: scale(0); opacity: 0; } }
+@keyframes explode { 0% { transform: scale(1); } 50% { transform: scale(1.4); filter: brightness(2); } 100% { transform: scale(0); } }
 
-/* Multiplier & UI */
-.multiplier-tag { position: absolute; top: 18%; right: 20px; background: radial-gradient(circle, #f00, #400); border: 2px solid gold; padding: 12px; border-radius: 50%; z-index: 20; box-shadow: 0 0 15px gold; animation: pulse 1s infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+.dragon-bg { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 85%; opacity: 0.2; z-index: 1; transition: 0.4s; }
+.dragon-attack { opacity: 0.9; filter: brightness(2) drop-shadow(0 0 20px red); transform: translate(-50%, -50%) scale(1.05); }
 
-.footer { background: rgba(0,0,0,0.95); padding: 15px; border-radius: 20px 20px 0 0; border-top: 3px solid gold; z-index: 10; }
-.buy-spin-btn { width: 100%; padding: 10px; background: linear-gradient(#f0f, #505); color: #fff; border: 2px solid #fff; border-radius: 8px; margin-bottom: 10px; font-size: 12px; cursor: pointer; }
-
-#spinBtn { width: 65px; height: 65px; border-radius: 50%; background: radial-gradient(gold, #8a6d00); border: 4px solid #400; color: #400; font-weight: bold; box-shadow: 0 0 20px gold; cursor: pointer; }
-
-#coinCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 150; display: none; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 200; }
-.big-win-panel { background: radial-gradient(circle, #700, #000); border: 5px solid gold; padding: 40px; text-align: center; border-radius: 20px; }
-.shimmer-gold { background: linear-gradient(90deg, #ffd700, #fff, #ffd700); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 1.5s infinite linear; }
+.multiplier-tag { position: absolute; top: 15%; right: 10px; background: radial-gradient(#f00, #400); border: 2px solid gold; padding: 12px; border-radius: 50%; z-index: 20; box-shadow: 0 0 15px gold; }
+.shimmer-gold { background: linear-gradient(90deg, #ffd700, #fff, #ffd700); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 2s infinite linear; }
 @keyframes shimmer { to { background-position: 200%; } }
+
+.footer { background: rgba(0,0,0,0.95); padding: 15px; border-radius: 20px 20px 0 0; border-top: 3px solid gold; }
+.stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.stat-item span { font-size: 10px; display: block; color: #aaa; cursor: pointer; }
+#spinBtn { width: 65px; height: 65px; border-radius: 50%; background: gold; color: #000; font-weight: bold; border: 4px solid #400; }
+
+/* Admin Modal */
+.admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid red; padding: 20px; z-index: 1000; display: none; text-align: center; border-radius: 10px; }
+.admin-modal button { display: block; width: 100%; margin: 10px 0; padding: 8px; cursor: pointer; }
+
+/* Big Win UI */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; }
+.win-text { font-size: 40px; color: #fff; margin: 20px 0; }
+.collect-btn { padding: 10px 30px; background: gold; border: none; font-weight: bold; border-radius: 5px; cursor: pointer; }
