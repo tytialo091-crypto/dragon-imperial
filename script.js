@@ -1,185 +1,69 @@
-let coin=1000;
-let freeSpin=0;
-let totalWin=0;
-let totalSpin=0;
-let highscore=1000;
-let auto=false;
-let autoInterval;
-let volatility="medium";
-let combo=1;
+/* PARTICLES */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
 
-const RTP=0.92;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-const normal=["🀄","🀅","🀆","🀇","🀈","🀉"];
-const wild="⭐";
-const scatter="🧧";
+let particles=[];
 
-const grid=document.getElementById("grid");
-const coinEl=document.getElementById("coin");
-const freeEl=document.getElementById("free");
-const highEl=document.getElementById("high");
-const info=document.getElementById("info");
-
-function save(){
-    localStorage.setItem("slot_save",JSON.stringify({
-        coin,freeSpin,totalWin,totalSpin,highscore
-    }));
+class Particle{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.size=Math.random()*3+1;
+this.speed=Math.random()*2+1;
+this.opacity=Math.random();
+}
+update(){
+this.y+=this.speed;
+if(this.y>canvas.height){
+this.y=0;
+this.x=Math.random()*canvas.width;
+}
+}
+draw(){
+ctx.fillStyle="rgba(255,215,0,"+this.opacity+")";
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+ctx.fill();
+}
 }
 
-function load(){
-    let data=localStorage.getItem("slot_save");
-    if(data){
-        let d=JSON.parse(data);
-        coin=d.coin;
-        freeSpin=d.freeSpin;
-        totalWin=d.totalWin;
-        totalSpin=d.totalSpin;
-        highscore=d.highscore;
-    }
+function init(){
+particles=[];
+for(let i=0;i<150;i++){
+particles.push(new Particle());
+}
 }
 
-function randomSymbol(){
-    let r=Math.random();
-
-    if(volatility==="low"){
-        if(r<0.05) return wild;
-        if(r<0.1) return scatter;
-    }
-    if(volatility==="medium"){
-        if(r<0.1) return wild;
-        if(r<0.18) return scatter;
-    }
-    if(volatility==="high"){
-        if(r<0.15) return wild;
-        if(r<0.25) return scatter;
-    }
-
-    return normal[Math.floor(Math.random()*normal.length)];
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+p.update();
+p.draw();
+});
+requestAnimationFrame(animate);
 }
 
-function createGrid(){
-    for(let i=0;i<15;i++){
-        let c=document.createElement("div");
-        c.className="cell";
-        c.textContent=randomSymbol();
-        grid.appendChild(c);
-    }
-}
+init();
+animate();
 
-function spin(){
-    let bet=parseInt(document.getElementById("bet").value);
+/* PARALLAX */
+document.addEventListener("mousemove",e=>{
+const bg=document.querySelector(".parallax-bg");
+let x=(e.clientX/window.innerWidth-0.5)*30;
+let y=(e.clientY/window.innerHeight-0.5)*30;
+bg.style.transform=`translate(${x}px,${y}px)`;
+});
 
-    if(freeSpin<=0){
-        if(coin<bet){
-            info.textContent="❌ Coin Habis!";
-            return;
-        }
-        coin-=bet;
-    }else{
-        freeSpin--;
-    }
+/* SOUND AUTO ON CLICK */
+document.body.addEventListener("click",()=>{
+document.getElementById("bgSound").play();
+},{once:true});
 
-    combo=1;
-    totalSpin++;
-    update();
-
-    document.querySelectorAll(".cell").forEach(c=>{
-        c.classList.remove("win");
-        c.textContent=randomSymbol();
-    });
-
-    setTimeout(()=>checkWin(bet),200);
-}
-
-function checkWin(bet){
-    let cells=document.querySelectorAll(".cell");
-    let win=0;
-    let scatterCount=0;
-
-    cells.forEach(c=>{
-        if(c.textContent===scatter) scatterCount++;
-    });
-
-    if(scatterCount>=3) freeSpin+=5;
-
-    for(let r=0;r<3;r++){
-        let start=r*5;
-        let first=cells[start].textContent;
-        let match=true;
-
-        for(let i=1;i<5;i++){
-            let cur=cells[start+i].textContent;
-            if(cur!==first && cur!==wild && first!==wild){
-                match=false; break;
-            }
-        }
-
-        if(match){
-            for(let i=0;i<5;i++){
-                cells[start+i].classList.add("win");
-                particle(cells[start+i]);
-            }
-            win+=bet*2*combo;
-            combo++;
-        }
-    }
-
-    let expected=totalSpin*bet*RTP;
-    if(totalWin>expected) win*=0.5;
-
-    if(win>0){
-        coin+=Math.floor(win);
-        totalWin+=Math.floor(win);
-        info.innerHTML=`🔥 WIN ${Math.floor(win)} | ⚡ x${combo-1}`;
-        setTimeout(()=>cascade(bet),600);
-    }
-
-    if(coin>highscore) highscore=coin;
-
-    save();
-    update();
-}
-
-function cascade(bet){
-    let again=false;
-    document.querySelectorAll(".cell").forEach(c=>{
-        if(c.classList.contains("win")){
-            c.classList.remove("win");
-            c.textContent=randomSymbol();
-            again=true;
-        }
-    });
-
-    if(again) setTimeout(()=>checkWin(bet),400);
-    else combo=1;
-}
-
-function particle(cell){
-    let rect=cell.getBoundingClientRect();
-    let p=document.createElement("div");
-    p.className="particle";
-    p.style.left=rect.left+"px";
-    p.style.top=rect.top+"px";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),500);
-}
-
-function toggleAuto(){
-    auto=!auto;
-    if(auto) autoInterval=setInterval(spin,1200);
-    else clearInterval(autoInterval);
-}
-
-function update(){
-    coinEl.textContent=coin;
-    freeEl.textContent=freeSpin;
-    highEl.textContent=highscore;
-}
-
-document.getElementById("spinBtn").onclick=spin;
-document.getElementById("autoBtn").onclick=toggleAuto;
-document.getElementById("vol").onchange=e=>volatility=e.target.value;
-
-load();
-createGrid();
-update();
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+init();
+});
