@@ -1,135 +1,74 @@
-const symbols = [
-    "assets/icons/cherry.png", "assets/icons/lemon.png", 
-    "assets/icons/bell.png", "assets/icons/diamond.png", "assets/icons/clover.png"
-];
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Imperial Mobile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="overlay">
+        <h1 class="shimmer">DRAGON IMPERIAL</h1>
+        <button id="startBtn">MASUK GAME</button>
+    </div>
 
-// Pastikan file ini ada di folder assets/sounds/
-const sounds = {
-    bgm: new Audio('assets/sounds/bgm.mp3'),
-    spin: new Audio('assets/sounds/spin.mp3'),
-    win: new Audio('assets/sounds/win.mp3'),
-    jackpot: new Audio('assets/sounds/jackpot.mp3')
-};
-sounds.bgm.loop = true;
+    <div class="mobile-wrapper" id="mainGame" style="display:none;">
+        <img src="assets/dragon.png" class="dragon-bg">
+        
+        <div class="header">
+            <button id="infoBtn" class="info-btn-top">ℹ️</button>
+            <button id="muteBtn" class="mute-btn-top">🔊</button>
+            <h2 class="shimmer">DRAGON IMPERIAL</h2>
+            <div class="jackpot-box">
+                <small>GRAND JACKPOT</small>
+                <div id="jpDisplay">5,000,000</div>
+            </div>
+        </div>
 
-let balance = 100000;
-let currentBet = 100;
-let isSpinning = false;
+        <div class="grid-container" id="grid"></div>
 
-document.getElementById("startBtn").addEventListener("click", () => {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("mainGame").style.display = "flex";
-    // Play BGM setelah klik
-    sounds.bgm.play().catch(e => console.log("Audio diblokir browser"));
-    initGrid();
-});
+        <div class="footer">
+            <button id="buySpinBtn" class="buy-spin-btn">BUY FREE SPIN <br> <span id="buyCost">10,000</span></button>
+            
+            <div class="stats-row">
+                <div class="stat-item"><span>SALDO</span><b id="balance">100,000</b></div>
+                <div class="stat-item"><span>MENANG</span><b id="winDisplay">0</b></div>
+            </div>
+            <div class="controls">
+                <div class="bet-adjuster">
+                    <button onclick="changeBet(-10)">-</button>
+                    <span id="betDisplay">BET: 100</span>
+                    <button onclick="changeBet(10)">+</button>
+                </div>
+                <div class="action-row">
+                    <label class="auto-btn"><input type="checkbox" id="autoCheck"> AUTO</label>
+                    <button id="spinBtn">SPIN</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-function initGrid() {
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-    for(let i=0; i<30; i++) {
-        const div = document.createElement("div");
-        div.className = "grid-item";
-        div.innerHTML = `<img src="${symbols[Math.floor(Math.random()*symbols.length)]}">`;
-        grid.appendChild(div);
-    }
-}
+    <div id="jpOverlay" class="jp-overlay">
+        <div class="jp-content">
+            <h1 class="shimmer">GRAND JACKPOT!</h1>
+            <div id="jpAmount" class="jp-win-text">0</div>
+            <button onclick="closeJP()">AMBIL HADIAH</button>
+        </div>
+    </div>
 
-function startSpin() {
-    if(isSpinning || balance < currentBet) return;
-    isSpinning = true;
-    balance -= currentBet;
-    document.getElementById("winDisplay").innerText = "0";
-    updateUI();
-    
-    sounds.spin.currentTime = 0;
-    sounds.spin.play().catch(() => {});
+    <div id="infoOverlay" class="jp-overlay">
+        <div class="jp-content" style="background: rgba(20,0,0,0.95);">
+            <h3>PAYTABLE</h3>
+            <table class="pay-table">
+                <tr><td>🐉</td><td>3+ SCATTER = 10 FREE SPINS</td></tr>
+                <tr><td>💎</td><td>8+ JADE = x10.0</td></tr>
+                <tr><td>🏮</td><td>8+ LANTERN = x5.0</td></tr>
+                <tr><td>🪙</td><td>8+ COIN = x2.0</td></tr>
+            </table>
+            <button onclick="closeInfo()">TUTUP</button>
+        </div>
+    </div>
 
-    let count = 0;
-    const imgs = document.querySelectorAll(".grid-item img");
-    const timer = setInterval(() => {
-        imgs.forEach(img => img.src = symbols[Math.floor(Math.random()*symbols.length)]);
-        count += 100;
-        if(count >= 1000) {
-            clearInterval(timer);
-            sounds.spin.pause();
-            checkWin();
-        }
-    }, 100);
-}
-
-function checkWin() {
-    const items = document.querySelectorAll(".grid-item");
-    const dragon = document.querySelector(".dragon-bg");
-    const results = Array.from(document.querySelectorAll(".grid-item img")).map(img => img.src);
-    const counts = {};
-    results.forEach(src => counts[src] = (counts[src] || 0) + 1);
-
-    let winSrcs = [];
-    let winAmount = 0;
-
-    for (const [src, count] of Object.entries(counts)) {
-        if (count >= 8) {
-            winSrcs.push(src);
-            winAmount += currentBet * (count * 0.5);
-        }
-    }
-
-    if (winSrcs.length > 0) {
-        sounds.win.currentTime = 0;
-        sounds.win.play().catch(() => {});
-        dragon.classList.add("power-up");
-
-        items.forEach(item => {
-            if(winSrcs.includes(item.querySelector("img").src)) item.classList.add("win-glow");
-        });
-
-        setTimeout(() => {
-            if(winAmount >= currentBet * 10) showJackpot(winAmount);
-            items.forEach(item => {
-                if(item.classList.contains("win-glow")) {
-                    item.classList.remove("win-glow");
-                    item.querySelector("img").src = symbols[Math.floor(Math.random()*symbols.length)];
-                }
-            });
-            dragon.classList.remove("power-up");
-            balance += winAmount;
-            document.getElementById("winDisplay").innerText = winAmount.toLocaleString();
-            updateUI();
-            checkWin(); 
-        }, 1200);
-    } else {
-        isSpinning = false;
-        if(document.getElementById("autoCheck").checked) setTimeout(startSpin, 1000);
-    }
-}
-
-function showJackpot(amt) {
-    sounds.jackpot.play().catch(() => {});
-    document.getElementById("jpAmount").innerText = amt.toLocaleString();
-    document.getElementById("jpOverlay").style.display = "flex";
-}
-
-function closeJP() { document.getElementById("jpOverlay").style.display = "none"; }
-function updateUI() {
-    document.getElementById("balance").innerText = balance.toLocaleString();
-}
-function changeBet(v) {
-    if(!isSpinning) {
-        currentBet = Math.max(10, currentBet + v);
-        document.getElementById("betDisplay").innerText = "BET: " + currentBet;
-    }
-}
-
-// Tombol BGM
-document.getElementById("muteBtn").addEventListener("click", (e) => {
-    if(sounds.bgm.paused) {
-        sounds.bgm.play().catch(() => alert("Klik layar dulu!"));
-        e.target.innerText = "🔊";
-    } else {
-        sounds.bgm.pause();
-        e.target.innerText = "🔇";
-    }
-});
-
-document.getElementById("spinBtn").addEventListener("click", startSpin);
+    <script src="script.js"></script>
+</body>
+</html>
