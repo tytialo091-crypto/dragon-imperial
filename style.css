@@ -1,29 +1,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Cinzel', serif; }
-body { background: #000; display: flex; justify-content: center; height: 100vh; overflow: hidden; color: gold; }
+
+body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+
+#overlay { position: fixed; inset: 0; background: radial-gradient(circle, #400, #000); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
+#startBtn { padding: 15px 40px; background: gold; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 0 20px #f00; }
 
 .mobile-wrapper { 
     width: 100%; max-width: 450px; height: 100vh; position: relative;
-    background: url('assets/bg.jpg') center center / cover no-repeat;
-    display: flex; flex-direction: column; padding: 10px; z-index: 1;
+    background: url('assets/bg.jpg') center/cover no-repeat;
+    display: flex; flex-direction: column; padding: 10px;
 }
-.mobile-wrapper::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: -1; }
 
-.dragon-bg { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 90%; opacity: 0.4; pointer-events: none; animation: float 4s infinite ease-in-out; }
-@keyframes float { 0%, 100% { transform: translate(-50%, -50%) translateY(0); } 50% { transform: translate(-50%, -50%) translateY(-20px); } }
+.dragon-bg { position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); width: 80%; opacity: 0.3; pointer-events: none; }
 
-.grid-container { display: grid; grid-template-columns: repeat(6, 5fr); gap: 4px; background: rgba(0,0,0,0.8); border: 2px solid gold; padding: 6px; border-radius: 8px; margin: 10px 0; flex-grow: 1; }
-.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
-.grid-item img { width: 85%; height: 85%; object-fit: contain; transition: all 0.3s; }
+.grid-container { 
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; 
+    background: rgba(0,0,0,0.85); border: 2px solid gold; padding: 6px; 
+    border-radius: 8px; flex-grow: 1; margin: 10px 0;
+}
 
-.win-glow { animation: explode 0.5s infinite alternate; background: rgba(255,215,0,0.4); }
-@keyframes explode { from { transform: scale(1); } to { transform: scale(1.1); } }
+.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); border-radius: 4px; }
+.grid-item img { width: 85%; height: 85%; object-fit: contain; }
 
-.buy-spin-btn { background: linear-gradient(180deg, #ff00ff, #800080); border: 2px solid white; color: white; border-radius: 10px; padding: 8px; font-size: 0.7rem; width: 100%; margin-bottom: 10px; cursor: pointer; }
-.shake { animation: shakeAnim 0.3s infinite; }
-@keyframes shakeAnim { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-2px, -1px); } 100% { transform: translate(1px, 1px); } }
+.footer { background: rgba(0,0,0,0.9); padding: 15px; border-top: 2px solid gold; border-radius: 15px 15px 0 0; }
+.stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.stat-item { width: 48%; border: 1px solid gold; text-align: center; padding: 5px; background: #111; color: gold; }
 
-.lightning-flash { animation: flash 0.1s 3; }
-@keyframes flash { 50% { background: rgba(255,255,255,0.8); } }
+.buy-spin-btn { width: 100%; padding: 10px; background: linear-gradient(#f0f, #505); color: #fff; border: 2px solid #fff; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
 
-/* Sisanya (button top, stats, controls) gunakan dari kode sebelumnya */
+.action-row { display: flex; justify-content: space-around; align-items: center; margin-top: 10px; }
+#spinBtn { width: 65px; height: 65px; border-radius: 50%; background: gold; border: 4px solid #400; font-weight: bold; box-shadow: 0 0 15px gold; cursor: pointer; }
+
+.win-glow { animation: blink 0.5s infinite; background: rgba(255, 215, 0, 0.4); }
+@keyframes blink { from { opacity: 1; } to { opacity: 0.5; } }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 200; }
+.modal-content { background: #200; padding: 20px; border: 2px solid gold; border-radius: 15px; text-align: center; color: gold; }
