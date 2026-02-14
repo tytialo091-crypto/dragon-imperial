@@ -1,59 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Cinzel', serif; }
+* { box-sizing: border-box; margin: 0; font-family: 'Arial', sans-serif; }
+body { background: #000; color: #fff; height: 100vh; display: flex; justify-content: center; overflow: hidden; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.login-box, .modal-content { background: #111; border: 2px solid gold; padding: 25px; border-radius: 15px; text-align: center; width: 320px; }
+.shimmer-gold { color: gold; text-shadow: 0 0 10px gold; }
+input { width: 100%; padding: 12px; margin: 15px 0; background: #222; border: 1px solid gold; color: #fff; text-align: center; border-radius: 8px; }
 
-body { 
-    background: #000; 
-    display: flex; justify-content: center; align-items: center; 
-    height: 100vh; width: 100vw; overflow: hidden; 
-}
+.mobile-wrapper { width: 100%; max-width: 450px; height: 100vh; display: flex; flex-direction: column; background: #050505; position: relative; }
+.header { padding: 10px; display: flex; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
+.user-profile { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.exp-track { width: 50px; height: 5px; background: #333; border-radius: 3px; overflow: hidden; }
+#expFill { height: 100%; background: #0f0; transition: 0.3s; }
 
-.mobile-wrapper { 
-    width: 100%; height: 100%; max-width: 480px; 
-    background: url('assets/bg.jpg') no-repeat center center;
-    background-size: cover;
-    position: relative; display: flex; flex-direction: column; 
-    justify-content: space-between; /* Membuat Header, Grid, Footer Tersebar Rapi */
-    padding: 20px 10px; z-index: 1;
-}
+.grid-container { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px; padding: 10px; }
+.grid-item { background: #151515; border: 1px solid #222; border-radius: 5px; display: flex; justify-content: center; align-items: center; }
+.grid-item img { width: 85%; height: 85%; object-fit: contain; }
 
-/* NAGA PAS DI TENGAH */
-.dragon-bg { 
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-    width: 90%; opacity: 0.4; z-index: 0; pointer-events: none; transition: 0.4s;
-}
+/* MAXWIN EFFECT */
+.maxwin-overlay { position: absolute; inset: 0; background: radial-gradient(circle, #800 0%, #000 100%); z-index: 500; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.maxwin-text { font-size: 50px; color: #fff; text-shadow: 0 0 20px gold; animation: zoom 0.5s infinite alternate; }
+#maxwinCount { font-size: 35px; color: gold; font-weight: bold; }
+.fire-particle { position: absolute; bottom: 0; width: 15px; height: 15px; background: orange; border-radius: 50%; filter: blur(5px); animation: fire 1s forwards; }
 
-.dragon-attack { 
-    opacity: 1 !important; 
-    filter: brightness(2) drop-shadow(0 0 30px red); 
-    transform: translate(-50%, -50%) scale(1.1) !important; 
-}
+@keyframes fire { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-600px) translateX(var(--random-x)) scale(4); opacity: 0; } }
+@keyframes zoom { from { transform: scale(1); } to { transform: scale(1.2); } }
 
-.grid-container { 
-    display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr);
-    gap: 5px; background: rgba(0,0,0,0.75); border: 2px solid gold; 
-    padding: 8px; border-radius: 12px; height: 42vh; 
-    z-index: 10; margin: 0 auto; width: 100%;
-}
+.footer { padding: 15px; background: #111; border-top: 1px solid #333; }
+.stats-row { display: flex; justify-content: space-around; margin-bottom: 10px; }
+.controls { background: #000; padding: 10px; border-radius: 12px; border: 1px solid #333; }
+.bet-adjuster { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; }
+.circle-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid gold; background: #222; color: gold; cursor: pointer; }
+.max-btn { background: #400; color: gold; border: 1px solid gold; padding: 5px 10px; border-radius: 5px; font-size: 10px; cursor: pointer; }
+#spinBtn { background: linear-gradient(gold, orange); color: #000; border: none; padding: 10px 45px; border-radius: 25px; font-weight: bold; font-size: 20px; cursor: pointer; }
 
-.grid-item img { width: 90%; height: 90%; object-fit: contain; }
+.gold-flash { animation: flash 0.2s 5, shake 0.1s infinite; }
+@keyframes flash { from { filter: brightness(1); } to { filter: brightness(2) sepia(1); } }
+@keyframes shake { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, 2px); } }
+.explode { animation: explode 0.5s forwards; }
+@keyframes explode { 0% { transform: scale(1); } 100% { transform: scale(0); opacity: 0; } }
 
-.footer { 
-    background: rgba(0,0,0,0.9); border-radius: 20px 20px 0 0; 
-    border-top: 3px solid gold; padding: 15px; z-index: 20;
-}
-
-.stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-.stat-item b { font-size: 16px; color: gold; display: block; }
-.stat-item span { font-size: 10px; color: #aaa; cursor: pointer; }
-
-#spinBtn { 
-    width: 75px; height: 75px; border-radius: 50%; 
-    background: radial-gradient(#fff, gold, #b8860b); 
-    color: #000; font-weight: bold; border: 4px solid #444; 
-    box-shadow: 0 0 15px gold; cursor: pointer;
-}
-
-/* Admin & Overlay */
-.admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid red; padding: 20px; z-index: 1000; display: none; text-align: center; border-radius: 10px; width: 280px; }
-.admin-modal button { display: block; width: 100%; margin: 8px 0; padding: 10px; cursor: pointer; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; }
+.primary-btn, .daily-btn, .logout-btn, .close-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+.primary-btn { background: gold; color: #000; }
+.daily-btn { background: #060; color: #fff; }
+.logout-btn { background: #600; color: #fff; }
+.close-btn { background: #444; color: #fff; }
