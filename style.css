@@ -1,45 +1,20 @@
-* { box-sizing: border-box; margin: 0; font-family: 'Arial', sans-serif; }
-body { background: #000; color: #fff; height: 100vh; display: flex; justify-content: center; overflow: hidden; }
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.login-box, .modal-content { background: #111; border: 2px solid gold; padding: 25px; border-radius: 15px; text-align: center; width: 320px; }
-.shimmer-gold { color: gold; text-shadow: 0 0 10px gold; }
-input { width: 100%; padding: 12px; margin: 15px 0; background: #222; border: 1px solid gold; color: #fff; text-align: center; border-radius: 8px; }
+/* Transisi Asap Global */
+.smoke-overlay {
+    position: fixed; inset: 0; background: radial-gradient(circle, #000, #111);
+    opacity: 0; pointer-events: none; z-index: 9999; transition: opacity 0.8s;
+}
+.smoke-active { opacity: 1; }
 
-.mobile-wrapper { width: 100%; max-width: 450px; height: 100vh; display: flex; flex-direction: column; background: #050505; position: relative; }
-.header { padding: 10px; display: flex; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
-.user-profile { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.exp-track { width: 50px; height: 5px; background: #333; border-radius: 3px; overflow: hidden; }
-#expFill { height: 100%; background: #0f0; transition: 0.3s; }
+/* Login Box */
+.login-logo { width: 220px; filter: drop-shadow(0 0 10px gold); animation: float 3s infinite ease-in-out; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-.grid-container { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px; padding: 10px; }
-.grid-item { background: #151515; border: 1px solid #222; border-radius: 5px; display: flex; justify-content: center; align-items: center; }
-.grid-item img { width: 85%; height: 85%; object-fit: contain; }
+/* Layout Footer */
+.main-controls { display: flex; align-items: center; justify-content: space-between; padding: 15px; }
+#spinBtn { width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(gold, orange); font-weight: bold; }
+.bet-info { display: flex; flex-direction: column; align-items: center; }
+.max-btn-small { font-size: 8px; background: #300; color: gold; border: 1px solid gold; padding: 2px 5px; margin-top: 4px; }
 
-/* MAXWIN EFFECT */
-.maxwin-overlay { position: absolute; inset: 0; background: radial-gradient(circle, #800 0%, #000 100%); z-index: 500; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-.maxwin-text { font-size: 50px; color: #fff; text-shadow: 0 0 20px gold; animation: zoom 0.5s infinite alternate; }
-#maxwinCount { font-size: 35px; color: gold; font-weight: bold; }
-.fire-particle { position: absolute; bottom: 0; width: 15px; height: 15px; background: orange; border-radius: 50%; filter: blur(5px); animation: fire 1s forwards; }
-
-@keyframes fire { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-600px) translateX(var(--random-x)) scale(4); opacity: 0; } }
-@keyframes zoom { from { transform: scale(1); } to { transform: scale(1.2); } }
-
-.footer { padding: 15px; background: #111; border-top: 1px solid #333; }
-.stats-row { display: flex; justify-content: space-around; margin-bottom: 10px; }
-.controls { background: #000; padding: 10px; border-radius: 12px; border: 1px solid #333; }
-.bet-adjuster { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 10px; }
-.circle-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid gold; background: #222; color: gold; cursor: pointer; }
-.max-btn { background: #400; color: gold; border: 1px solid gold; padding: 5px 10px; border-radius: 5px; font-size: 10px; cursor: pointer; }
-#spinBtn { background: linear-gradient(gold, orange); color: #000; border: none; padding: 10px 45px; border-radius: 25px; font-weight: bold; font-size: 20px; cursor: pointer; }
-
-.gold-flash { animation: flash 0.2s 5, shake 0.1s infinite; }
-@keyframes flash { from { filter: brightness(1); } to { filter: brightness(2) sepia(1); } }
-@keyframes shake { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(2px, 2px); } }
-.explode { animation: explode 0.5s forwards; }
-@keyframes explode { 0% { transform: scale(1); } 100% { transform: scale(0); opacity: 0; } }
-
-.primary-btn, .daily-btn, .logout-btn, .close-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-.primary-btn { background: gold; color: #000; }
-.daily-btn { background: #060; color: #fff; }
-.logout-btn { background: #600; color: #fff; }
-.close-btn { background: #444; color: #fff; }
+/* Backgrounds */
+.bg-normal { background: url('assets/bg_normal.jpg') center/cover; }
+.bg-freespin { background: url('assets/bg_freespin.jpg') center/cover; box-shadow: inset 0 0 100px red; }
