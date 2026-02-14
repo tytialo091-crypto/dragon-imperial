@@ -5,29 +5,56 @@ body { background: #000; display: flex; justify-content: center; height: 100vh; 
 #overlay { position:fixed; inset:0; background:radial-gradient(circle, #400, #000); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:100; }
 #startBtn { padding: 15px 40px; background: gold; border:none; border-radius:30px; font-weight:bold; cursor:pointer; margin-top:20px; box-shadow: 0 0 20px #f00; }
 
-.mobile-wrapper { width: 100%; max-width: 450px; height: 100%; background: #1a0000; display: flex; flex-direction: column; padding: 10px; border: 2px solid #300; }
-.shimmer { text-align: center; color: gold; text-shadow: 0 0 10px #ff0; animation: pulse 2s infinite; }
+.mobile-wrapper { 
+    width: 100%; max-width: 450px; height: 100vh; position: relative;
+    background: url('assets/bg.jpg') center center / cover no-repeat;
+    display: flex; flex-direction: column; padding: 10px; overflow: hidden;
+}
+.mobile-wrapper::before { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 1; }
 
-.jackpot-box { background: linear-gradient(180deg, #800, #200); border: 2px solid gold; border-radius: 10px; text-align: center; padding: 5px; margin: 5px 0; }
-#jpDisplay { font-size: 24px; color: #fff; }
+.dragon-bg { 
+    position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+    width: 90%; opacity: 0.5; z-index: 1; pointer-events: none;
+    transition: all 0.3s ease; animation: dragonFloat 4s infinite ease-in-out;
+}
+.dragon-bg.power-up {
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 25px #ffcc00) brightness(1.8) !important;
+    animation: dragonRoar 0.2s infinite alternate !important;
+}
 
-.grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: rgba(0,0,0,0.8); border: 2px solid gold; padding: 5px; border-radius: 8px; flex-grow: 1; margin: 10px 0; }
-.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+@keyframes dragonFloat {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+    50% { transform: translate(-50%, -50%) translateY(-15px); }
+}
+@keyframes dragonRoar {
+    from { transform: translate(-50%, -50%) scale(0.98) rotate(-1deg); }
+    to { transform: translate(-50%, -50%) scale(1.02) rotate(1deg); }
+}
+
+.mute-btn-top {
+    position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.6); border: 1px solid gold;
+    color: gold; width: 35px; height: 35px; border-radius: 8px; z-index: 10;
+}
+
+.header, .grid-container, .footer { position: relative; z-index: 5; }
+.shimmer { text-align: center; color: gold; text-shadow: 0 0 10px #ff0; }
+.jackpot-box { background: linear-gradient(180deg, #800, #200); border: 2px solid gold; border-radius: 10px; text-align: center; padding: 5px; }
+
+.grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: rgba(0,0,0,0.7); border: 2px solid gold; padding: 5px; border-radius: 8px; flex-grow: 1; margin: 10px 0; }
+.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); border-radius: 4px; }
 .grid-item img { width: 85%; }
 
-/* Efek Pecah */
-.win-glow { animation: explode 0.5s infinite alternate; background: rgba(255,215,0,0.4); }
+.win-glow { animation: explode 0.5s infinite alternate; background: rgba(255,215,0,0.4); border-radius: 4px; }
 @keyframes explode { from { transform: scale(1); filter: brightness(1); } to { transform: scale(1.1); filter: brightness(2); } }
 
 .footer { background: rgba(0,0,0,0.9); padding: 15px; border-radius: 15px; border-top: 2px solid gold; }
 .stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
 .stat-item { text-align: center; width: 48%; border: 1px solid gold; border-radius: 8px; padding: 5px; }
-.stat-item span { font-size: 10px; display: block; }
-
-.controls { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-.bet-adjuster { display: flex; gap: 15px; align-items: center; }
-.bet-adjuster button { width: 30px; height: 30px; border-radius: 50%; border: none; background: gold; font-weight: bold; }
-
-.action-row { display: flex; gap: 20px; align-items: center; }
+.action-row { display: flex; gap: 20px; align-items: center; justify-content: center; margin-top: 10px; }
 #spinBtn { width: 70px; height: 70px; border-radius: 50%; border: 4px solid #400; background: radial-gradient(circle, gold, #f80); font-weight: bold; box-shadow: 0 0 15px gold; cursor: pointer; }
-#muteBtn { background: none; border: 1px solid gold; color: gold; padding: 5px; border-radius: 5px; }
+
+.jp-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 100; }
+.jp-content { text-align: center; padding: 30px; border: 3px solid gold; border-radius: 20px; background: radial-gradient(circle, #600, #000); box-shadow: 0 0 50px gold; animation: zoomIn 0.5s ease; }
+.jp-win-text { font-size: 35px; color: #fff; text-shadow: 0 0 20px gold; margin: 20px 0; }
+@keyframes zoomIn { from { transform: scale(0); } to { transform: scale(1); } }
