@@ -1,46 +1,48 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dragon Imperial Slot</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dragon Imperial Mobile</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- MENU AWAL -->
-<div id="menu">
-  <h1 class="title shimmer">DRAGON IMPERIAL</h1>
-  <button id="enterGame">ENTER</button>
-</div>
-
-<!-- GAME SCREEN -->
-<div id="game" style="display:none;">
-  <div class="parallax-bg"></div>
-  <canvas id="particles"></canvas>
-  <img src="assets/dragon.png" class="dragon">
-
-  <div class="container">
-    <div class="card">
-      <h1 class="title shimmer">DRAGON IMPERIAL SLOT</h1>
-      <div class="balance">Balance: <span id="balance">1000</span> 💰</div>
-
-      <div class="slot-machine">
-        <div class="reel" id="reel1"></div>
-        <div class="reel" id="reel2"></div>
-        <div class="reel" id="reel3"></div>
-        <div class="reel" id="reel4"></div>
-        <div class="reel" id="reel5"></div>
-      </div>
-
-      <div class="controls">
-        <button id="spin">SPIN</button>
-        <label><input type="checkbox" id="autoSpin"> Auto Spin</label>
-      </div>
+    <div id="overlay">
+        <h1 class="shimmer">DRAGON IMPERIAL</h1>
+        <button id="startBtn">MASUK GAME</button>
     </div>
-  </div>
-</div>
 
-<script src="script.js"></script>
+    <div class="mobile-wrapper" id="mainGame" style="display:none;">
+        <div class="header">
+            <h2 class="shimmer">DRAGON IMPERIAL</h2>
+            <div class="jackpot-box">
+                <small>GRAND JACKPOT</small>
+                <div id="jpDisplay">5,000,000</div>
+            </div>
+        </div>
+
+        <div class="grid-container" id="grid"></div>
+
+        <div class="footer">
+            <div class="stats-row">
+                <div class="stat-item"><span>SALDO</span><b id="balance">100,000</b></div>
+                <div class="stat-item"><span>MENANG</span><b id="winDisplay">0</b></div>
+            </div>
+
+            <div class="controls">
+                <div class="bet-adjuster">
+                    <button onclick="changeBet(-10)">-</button>
+                    <span id="betDisplay">BET: 100</span>
+                    <button onclick="changeBet(10)">+</button>
+                </div>
+                <div class="action-row">
+                    <label class="auto-btn"><input type="checkbox" id="autoCheck"> AUTO</label>
+                    <button id="spinBtn">SPIN</button>
+                    <button id="muteBtn">🔊</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
