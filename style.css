@@ -1,135 +1,29 @@
-const symbols = [
-    "assets/icons/cherry.png", "assets/icons/lemon.png", 
-    "assets/icons/bell.png", "assets/icons/diamond.png", "assets/icons/clover.png"
-];
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Cinzel', serif; }
+body { background: #000; display: flex; justify-content: center; height: 100vh; overflow: hidden; color: gold; }
 
-// Pastikan file ini ada di folder assets/sounds/
-const sounds = {
-    bgm: new Audio('assets/sounds/bgm.mp3'),
-    spin: new Audio('assets/sounds/spin.mp3'),
-    win: new Audio('assets/sounds/win.mp3'),
-    jackpot: new Audio('assets/sounds/jackpot.mp3')
-};
-sounds.bgm.loop = true;
-
-let balance = 100000;
-let currentBet = 100;
-let isSpinning = false;
-
-document.getElementById("startBtn").addEventListener("click", () => {
-    document.getElementById("overlay").style.display = "none";
-    document.getElementById("mainGame").style.display = "flex";
-    // Play BGM setelah klik
-    sounds.bgm.play().catch(e => console.log("Audio diblokir browser"));
-    initGrid();
-});
-
-function initGrid() {
-    const grid = document.getElementById("grid");
-    grid.innerHTML = "";
-    for(let i=0; i<30; i++) {
-        const div = document.createElement("div");
-        div.className = "grid-item";
-        div.innerHTML = `<img src="${symbols[Math.floor(Math.random()*symbols.length)]}">`;
-        grid.appendChild(div);
-    }
+.mobile-wrapper { 
+    width: 100%; max-width: 450px; height: 100vh; position: relative;
+    background: url('assets/bg.jpg') center center / cover no-repeat;
+    display: flex; flex-direction: column; padding: 10px; z-index: 1;
 }
+.mobile-wrapper::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: -1; }
 
-function startSpin() {
-    if(isSpinning || balance < currentBet) return;
-    isSpinning = true;
-    balance -= currentBet;
-    document.getElementById("winDisplay").innerText = "0";
-    updateUI();
-    
-    sounds.spin.currentTime = 0;
-    sounds.spin.play().catch(() => {});
+.dragon-bg { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 90%; opacity: 0.4; pointer-events: none; animation: float 4s infinite ease-in-out; }
+@keyframes float { 0%, 100% { transform: translate(-50%, -50%) translateY(0); } 50% { transform: translate(-50%, -50%) translateY(-20px); } }
 
-    let count = 0;
-    const imgs = document.querySelectorAll(".grid-item img");
-    const timer = setInterval(() => {
-        imgs.forEach(img => img.src = symbols[Math.floor(Math.random()*symbols.length)]);
-        count += 100;
-        if(count >= 1000) {
-            clearInterval(timer);
-            sounds.spin.pause();
-            checkWin();
-        }
-    }, 100);
-}
+.grid-container { display: grid; grid-template-columns: repeat(6, 5fr); gap: 4px; background: rgba(0,0,0,0.8); border: 2px solid gold; padding: 6px; border-radius: 8px; margin: 10px 0; flex-grow: 1; }
+.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+.grid-item img { width: 85%; height: 85%; object-fit: contain; transition: all 0.3s; }
 
-function checkWin() {
-    const items = document.querySelectorAll(".grid-item");
-    const dragon = document.querySelector(".dragon-bg");
-    const results = Array.from(document.querySelectorAll(".grid-item img")).map(img => img.src);
-    const counts = {};
-    results.forEach(src => counts[src] = (counts[src] || 0) + 1);
+.win-glow { animation: explode 0.5s infinite alternate; background: rgba(255,215,0,0.4); }
+@keyframes explode { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-    let winSrcs = [];
-    let winAmount = 0;
+.buy-spin-btn { background: linear-gradient(180deg, #ff00ff, #800080); border: 2px solid white; color: white; border-radius: 10px; padding: 8px; font-size: 0.7rem; width: 100%; margin-bottom: 10px; cursor: pointer; }
+.shake { animation: shakeAnim 0.3s infinite; }
+@keyframes shakeAnim { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-2px, -1px); } 100% { transform: translate(1px, 1px); } }
 
-    for (const [src, count] of Object.entries(counts)) {
-        if (count >= 8) {
-            winSrcs.push(src);
-            winAmount += currentBet * (count * 0.5);
-        }
-    }
+.lightning-flash { animation: flash 0.1s 3; }
+@keyframes flash { 50% { background: rgba(255,255,255,0.8); } }
 
-    if (winSrcs.length > 0) {
-        sounds.win.currentTime = 0;
-        sounds.win.play().catch(() => {});
-        dragon.classList.add("power-up");
-
-        items.forEach(item => {
-            if(winSrcs.includes(item.querySelector("img").src)) item.classList.add("win-glow");
-        });
-
-        setTimeout(() => {
-            if(winAmount >= currentBet * 10) showJackpot(winAmount);
-            items.forEach(item => {
-                if(item.classList.contains("win-glow")) {
-                    item.classList.remove("win-glow");
-                    item.querySelector("img").src = symbols[Math.floor(Math.random()*symbols.length)];
-                }
-            });
-            dragon.classList.remove("power-up");
-            balance += winAmount;
-            document.getElementById("winDisplay").innerText = winAmount.toLocaleString();
-            updateUI();
-            checkWin(); 
-        }, 1200);
-    } else {
-        isSpinning = false;
-        if(document.getElementById("autoCheck").checked) setTimeout(startSpin, 1000);
-    }
-}
-
-function showJackpot(amt) {
-    sounds.jackpot.play().catch(() => {});
-    document.getElementById("jpAmount").innerText = amt.toLocaleString();
-    document.getElementById("jpOverlay").style.display = "flex";
-}
-
-function closeJP() { document.getElementById("jpOverlay").style.display = "none"; }
-function updateUI() {
-    document.getElementById("balance").innerText = balance.toLocaleString();
-}
-function changeBet(v) {
-    if(!isSpinning) {
-        currentBet = Math.max(10, currentBet + v);
-        document.getElementById("betDisplay").innerText = "BET: " + currentBet;
-    }
-}
-
-// Tombol BGM
-document.getElementById("muteBtn").addEventListener("click", (e) => {
-    if(sounds.bgm.paused) {
-        sounds.bgm.play().catch(() => alert("Klik layar dulu!"));
-        e.target.innerText = "🔊";
-    } else {
-        sounds.bgm.pause();
-        e.target.innerText = "🔇";
-    }
-});
-
-document.getElementById("spinBtn").addEventListener("click", startSpin);
+/* Sisanya (button top, stats, controls) gunakan dari kode sebelumnya */
