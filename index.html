@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Imperial 5x4 Final</title>
+    <title>Dragon Imperial 5x4 Cascade Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,12 +13,13 @@
     </div>
 
     <div class="mobile-wrapper" id="mainGame" style="display:none;">
+        <div id="dragon-breath-overlay"></div>
         <img src="assets/dragon.jpg" class="dragon-bg">
         
         <div class="header">
             <div class="jackpot-box">
                 <small>GRAND JACKPOT</small>
-                <div id="jpDisplay">Rp5.000.000</div>
+                <div id="jpDisplay">Rp 5.000.000</div>
             </div>
         </div>
 
@@ -28,16 +29,23 @@
 
         <div class="grid-container" id="grid"></div>
 
+        <div class="buy-feature-container" id="buyContainer">
+            <button id="buy-fs-btn" onclick="buyFreeSpin()">BUY FREE SPIN | Rp 1.500.000</button>
+        </div>
+
+        <div class="dragon-container" id="dragon-side">
+            <img src="assets/dragon_side.png" style="width: 100%;">
+        </div>
+
         <div class="footer">
             <div class="stats-row">
-                <div class="stat-item"><span id="triggerAdmin">SALDO</span><b id="balance">Rp0</b></div>
-                <div class="stat-item"><span>MENANG</span><b id="winDisplay">Rp0</b></div>
+                <div class="stat-item"><span id="triggerAdmin">SALDO</span><b id="balance">Rp 0</b></div>
+                <div class="stat-item"><span>MENANG</span><b id="winDisplay">Rp 0</b></div>
             </div>
-            
             <div class="controls">
                 <div class="bet-adjuster">
                     <button onclick="changeBet(-1000)">−</button>
-                    <span id="betDisplay">BET: Rp1.000</span>
+                    <span id="betDisplay">BET: Rp 1.000</span>
                     <button onclick="changeBet(1000)">+</button>
                 </div>
                 <div class="action-row">
@@ -51,18 +59,10 @@
         </div>
     </div>
 
-    <div id="adminPanel" class="admin-modal">
-        <h3>ADMIN SETTING</h3>
-        <button onclick="addBalance(1000000)">+Rp1 JUTA SALDO</button>
-        <button onclick="cheatMaxWin()" style="background:gold; color:black;">NEXT SPIN MAXWIN</button>
-        <button onclick="closeAdmin()" style="background:red; color:white;">TUTUP</button>
-    </div>
-
-    <div id="bigWinOverlay" class="modal-overlay">
-        <div class="modal-content">
-            <h1 class="shimmer-gold">BIG WIN!</h1>
-            <div id="bigWinAmount" class="win-text">Rp0</div>
-            <button class="collect-btn" onclick="closeBigWin()">COLLECT</button>
+    <div id="win-celebration" class="win-popup" style="display:none;">
+        <div class="win-content">
+            <h1 id="win-label">BIG WIN</h1>
+            <h2 id="win-anim-amount">Rp 0</h2>
         </div>
     </div>
 
