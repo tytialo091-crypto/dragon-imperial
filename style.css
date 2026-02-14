@@ -1,60 +1,135 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Cinzel', serif; }
-body { background: #000; display: flex; justify-content: center; height: 100vh; overflow: hidden; color: gold; }
+const symbols = [
+    "assets/icons/cherry.png", "assets/icons/lemon.png", 
+    "assets/icons/bell.png", "assets/icons/diamond.png", "assets/icons/clover.png"
+];
 
-#overlay { position:fixed; inset:0; background:radial-gradient(circle, #400, #000); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:100; }
-#startBtn { padding: 15px 40px; background: gold; border:none; border-radius:30px; font-weight:bold; cursor:pointer; margin-top:20px; box-shadow: 0 0 20px #f00; }
+// Pastikan file ini ada di folder assets/sounds/
+const sounds = {
+    bgm: new Audio('assets/sounds/bgm.mp3'),
+    spin: new Audio('assets/sounds/spin.mp3'),
+    win: new Audio('assets/sounds/win.mp3'),
+    jackpot: new Audio('assets/sounds/jackpot.mp3')
+};
+sounds.bgm.loop = true;
 
-.mobile-wrapper { 
-    width: 100%; max-width: 450px; height: 100vh; position: relative;
-    background: url('assets/bg.jpg') center center / cover no-repeat;
-    display: flex; flex-direction: column; padding: 10px; overflow: hidden;
-}
-.mobile-wrapper::before { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 1; }
+let balance = 100000;
+let currentBet = 100;
+let isSpinning = false;
 
-.dragon-bg { 
-    position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
-    width: 90%; opacity: 0.5; z-index: 1; pointer-events: none;
-    transition: all 0.3s ease; animation: dragonFloat 4s infinite ease-in-out;
-}
-.dragon-bg.power-up {
-    opacity: 1 !important;
-    filter: drop-shadow(0 0 25px #ffcc00) brightness(1.8) !important;
-    animation: dragonRoar 0.2s infinite alternate !important;
-}
+document.getElementById("startBtn").addEventListener("click", () => {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("mainGame").style.display = "flex";
+    // Play BGM setelah klik
+    sounds.bgm.play().catch(e => console.log("Audio diblokir browser"));
+    initGrid();
+});
 
-@keyframes dragonFloat {
-    0%, 100% { transform: translate(-50%, -50%) translateY(0); }
-    50% { transform: translate(-50%, -50%) translateY(-15px); }
-}
-@keyframes dragonRoar {
-    from { transform: translate(-50%, -50%) scale(0.98) rotate(-1deg); }
-    to { transform: translate(-50%, -50%) scale(1.02) rotate(1deg); }
-}
-
-.mute-btn-top {
-    position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.6); border: 1px solid gold;
-    color: gold; width: 35px; height: 35px; border-radius: 8px; z-index: 10;
+function initGrid() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    for(let i=0; i<30; i++) {
+        const div = document.createElement("div");
+        div.className = "grid-item";
+        div.innerHTML = `<img src="${symbols[Math.floor(Math.random()*symbols.length)]}">`;
+        grid.appendChild(div);
+    }
 }
 
-.header, .grid-container, .footer { position: relative; z-index: 5; }
-.shimmer { text-align: center; color: gold; text-shadow: 0 0 10px #ff0; }
-.jackpot-box { background: linear-gradient(180deg, #800, #200); border: 2px solid gold; border-radius: 10px; text-align: center; padding: 5px; }
+function startSpin() {
+    if(isSpinning || balance < currentBet) return;
+    isSpinning = true;
+    balance -= currentBet;
+    document.getElementById("winDisplay").innerText = "0";
+    updateUI();
+    
+    sounds.spin.currentTime = 0;
+    sounds.spin.play().catch(() => {});
 
-.grid-container { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; background: rgba(0,0,0,0.7); border: 2px solid gold; padding: 5px; border-radius: 8px; flex-grow: 1; margin: 10px 0; }
-.grid-item { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.5); border-radius: 4px; }
-.grid-item img { width: 85%; }
+    let count = 0;
+    const imgs = document.querySelectorAll(".grid-item img");
+    const timer = setInterval(() => {
+        imgs.forEach(img => img.src = symbols[Math.floor(Math.random()*symbols.length)]);
+        count += 100;
+        if(count >= 1000) {
+            clearInterval(timer);
+            sounds.spin.pause();
+            checkWin();
+        }
+    }, 100);
+}
 
-.win-glow { animation: explode 0.5s infinite alternate; background: rgba(255,215,0,0.4); border-radius: 4px; }
-@keyframes explode { from { transform: scale(1); filter: brightness(1); } to { transform: scale(1.1); filter: brightness(2); } }
+function checkWin() {
+    const items = document.querySelectorAll(".grid-item");
+    const dragon = document.querySelector(".dragon-bg");
+    const results = Array.from(document.querySelectorAll(".grid-item img")).map(img => img.src);
+    const counts = {};
+    results.forEach(src => counts[src] = (counts[src] || 0) + 1);
 
-.footer { background: rgba(0,0,0,0.9); padding: 15px; border-radius: 15px; border-top: 2px solid gold; }
-.stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-.stat-item { text-align: center; width: 48%; border: 1px solid gold; border-radius: 8px; padding: 5px; }
-.action-row { display: flex; gap: 20px; align-items: center; justify-content: center; margin-top: 10px; }
-#spinBtn { width: 70px; height: 70px; border-radius: 50%; border: 4px solid #400; background: radial-gradient(circle, gold, #f80); font-weight: bold; box-shadow: 0 0 15px gold; cursor: pointer; }
+    let winSrcs = [];
+    let winAmount = 0;
 
-.jp-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 100; }
-.jp-content { text-align: center; padding: 30px; border: 3px solid gold; border-radius: 20px; background: radial-gradient(circle, #600, #000); box-shadow: 0 0 50px gold; animation: zoomIn 0.5s ease; }
-.jp-win-text { font-size: 35px; color: #fff; text-shadow: 0 0 20px gold; margin: 20px 0; }
-@keyframes zoomIn { from { transform: scale(0); } to { transform: scale(1); } }
+    for (const [src, count] of Object.entries(counts)) {
+        if (count >= 8) {
+            winSrcs.push(src);
+            winAmount += currentBet * (count * 0.5);
+        }
+    }
+
+    if (winSrcs.length > 0) {
+        sounds.win.currentTime = 0;
+        sounds.win.play().catch(() => {});
+        dragon.classList.add("power-up");
+
+        items.forEach(item => {
+            if(winSrcs.includes(item.querySelector("img").src)) item.classList.add("win-glow");
+        });
+
+        setTimeout(() => {
+            if(winAmount >= currentBet * 10) showJackpot(winAmount);
+            items.forEach(item => {
+                if(item.classList.contains("win-glow")) {
+                    item.classList.remove("win-glow");
+                    item.querySelector("img").src = symbols[Math.floor(Math.random()*symbols.length)];
+                }
+            });
+            dragon.classList.remove("power-up");
+            balance += winAmount;
+            document.getElementById("winDisplay").innerText = winAmount.toLocaleString();
+            updateUI();
+            checkWin(); 
+        }, 1200);
+    } else {
+        isSpinning = false;
+        if(document.getElementById("autoCheck").checked) setTimeout(startSpin, 1000);
+    }
+}
+
+function showJackpot(amt) {
+    sounds.jackpot.play().catch(() => {});
+    document.getElementById("jpAmount").innerText = amt.toLocaleString();
+    document.getElementById("jpOverlay").style.display = "flex";
+}
+
+function closeJP() { document.getElementById("jpOverlay").style.display = "none"; }
+function updateUI() {
+    document.getElementById("balance").innerText = balance.toLocaleString();
+}
+function changeBet(v) {
+    if(!isSpinning) {
+        currentBet = Math.max(10, currentBet + v);
+        document.getElementById("betDisplay").innerText = "BET: " + currentBet;
+    }
+}
+
+// Tombol BGM
+document.getElementById("muteBtn").addEventListener("click", (e) => {
+    if(sounds.bgm.paused) {
+        sounds.bgm.play().catch(() => alert("Klik layar dulu!"));
+        e.target.innerText = "🔊";
+    } else {
+        sounds.bgm.pause();
+        e.target.innerText = "🔇";
+    }
+});
+
+document.getElementById("spinBtn").addEventListener("click", startSpin);
