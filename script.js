@@ -5,6 +5,7 @@ const sounds = {
     win: new Audio('assets/sounds/win.mp3')
 };
 sounds.bgm.loop = true;
+sounds.bgm.volume = 0.4;
 
 let balance = 100000, currentBet = 100, isSpinning = false, freeSpins = 0, totalMultiplier = 0;
 
@@ -66,19 +67,15 @@ async function checkWin() {
     }
 
     if (winSrcs.length > 0) {
-        // Multiplier Check
         items.forEach(item => {
             const src = item.querySelector("img").src.split('/').pop();
-            if (src.includes("orb")) {
-                totalMultiplier += src.includes("red") ? 25 : 5;
-            }
+            if (src.includes("orb")) totalMultiplier += src.includes("red") ? 25 : 5;
             if (winSrcs.includes(src)) item.classList.add("win-glow");
         });
 
         sounds.win.play().catch(() => {});
         await new Promise(r => setTimeout(r, 1000));
         
-        // Tumble Action
         items.forEach(item => {
             if (item.classList.contains("win-glow")) {
                 item.classList.remove("win-glow");
@@ -86,18 +83,19 @@ async function checkWin() {
             }
         });
 
-        balance += (winAmount * (totalMultiplier || 1));
-        document.getElementById("winDisplay").innerText = (winAmount * (totalMultiplier || 1)).toLocaleString();
+        let finalWin = winAmount * (totalMultiplier || 1);
+        balance += finalWin;
+        document.getElementById("winDisplay").innerText = finalWin.toLocaleString();
         updateUI();
         checkWin(); 
     } else {
         if (counts["dragon_gold.png"] >= 3) {
             freeSpins += 10;
-            alert("10 FREE SPINS!");
+            alert("JACKPOT! 10 FREE SPINS!");
         }
         totalMultiplier = 0;
         isSpinning = false;
-        if (document.getElementById("autoCheck").checked || freeSpins > 0) setTimeout(startSpin, 1000);
+        if (document.getElementById("autoCheck").checked || freeSpins > 0) setTimeout(startSpin, 1200);
     }
 }
 
@@ -109,8 +107,8 @@ function updateUI() {
 
 document.getElementById("spinBtn").addEventListener("click", startSpin);
 document.getElementById("muteBtn").addEventListener("click", (e) => {
-    if(sounds.bgm.paused) { sounds.bgm.play(); e.target.innerText = "🔊"; }
-    else { sounds.bgm.pause(); e.target.innerText = "🔇"; }
+    if(sounds.bgm.paused) { sounds.bgm.play(); e.target.innerText = "🔊 SOUND"; }
+    else { sounds.bgm.pause(); e.target.innerText = "🔇 SOUND"; }
 });
 document.getElementById("buySpinBtn").addEventListener("click", () => {
     let cost = currentBet * 100;
