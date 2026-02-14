@@ -11,9 +11,8 @@ body { background: #000; overflow: hidden; display: flex; justify-content: cente
 .grid-container { 
     display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr);
     gap: 4px; background: rgba(0,0,0,0.85); border: 2px solid gold; padding: 6px;
-    border-radius: 12px; height: 45vh; z-index: 5; margin: 10px 0;
+    border-radius: 12px; height: 44vh; z-index: 5; margin: 10px 0;
 }
-.grid-item { display: flex; justify-content: center; align-items: center; }
 .grid-item img { width: 85%; height: 85%; object-fit: contain; }
 
 /* Animasi */
@@ -29,16 +28,15 @@ body { background: #000; overflow: hidden; display: flex; justify-content: cente
 .shimmer-gold { background: linear-gradient(90deg, #ffd700, #fff, #ffd700); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 2s infinite linear; }
 @keyframes shimmer { to { background-position: 200%; } }
 
-.footer { background: rgba(0,0,0,0.95); padding: 15px; border-radius: 20px 20px 0 0; border-top: 3px solid gold; }
-.stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-.stat-item span { font-size: 10px; display: block; color: #aaa; cursor: pointer; }
-#spinBtn { width: 65px; height: 65px; border-radius: 50%; background: gold; color: #000; font-weight: bold; border: 4px solid #400; }
+.footer { background: rgba(0,0,0,0.95); padding: 12px; border-radius: 20px 20px 0 0; border-top: 3px solid gold; }
+.stats-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.stat-item b { font-size: 14px; display: block; }
+.stat-item span { font-size: 10px; color: #aaa; cursor: pointer; }
+#spinBtn { width: 65px; height: 65px; border-radius: 50%; background: gold; color: #000; font-weight: bold; border: 4px solid #400; cursor: pointer; }
 
-/* Admin Modal */
-.admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid red; padding: 20px; z-index: 1000; display: none; text-align: center; border-radius: 10px; }
-.admin-modal button { display: block; width: 100%; margin: 10px 0; padding: 8px; cursor: pointer; }
+.admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid red; padding: 20px; z-index: 1000; display: none; text-align: center; border-radius: 10px; width: 280px; }
+.admin-modal button { display: block; width: 100%; margin: 10px 0; padding: 10px; cursor: pointer; font-weight: bold; }
 
-/* Big Win UI */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; }
-.win-text { font-size: 40px; color: #fff; margin: 20px 0; }
+.win-text { font-size: 32px; color: #fff; margin: 20px 0; }
 .collect-btn { padding: 10px 30px; background: gold; border: none; font-weight: bold; border-radius: 5px; cursor: pointer; }
