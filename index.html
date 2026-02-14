@@ -3,33 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dragon Imperial</title>
+<title>Dragon Imperial Slot</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="loading-screen">
-  <h1>DRAGON IMPERIAL</h1>
+<!-- MENU AWAL -->
+<div id="menu">
+  <h1 class="title shimmer">DRAGON IMPERIAL</h1>
+  <button id="enterGame">ENTER</button>
 </div>
 
-<div class="parallax-bg"></div>
-<img src="assets/dragon.png" class="dragon">
+<!-- GAME SCREEN -->
+<div id="game" style="display:none;">
+  <div class="parallax-bg"></div>
+  <canvas id="particles"></canvas>
+  <img src="assets/dragon.png" class="dragon">
 
-<canvas id="particles"></canvas>
+  <div class="container">
+    <div class="card">
+      <h1 class="title shimmer">DRAGON IMPERIAL SLOT</h1>
+      <div class="balance">Balance: <span id="balance">1000</span> 💰</div>
 
-<div class="container">
-  <div class="card">
-    <h1 class="title shimmer">DRAGON IMPERIAL</h1>
-    <div class="divider"></div>
-    <div class="profile">
-      <h2>Bintang Arya Hafidsyah</h2>
-      <p>Kelas X RPL 1</p>
-      <p>SMKS Brigjend Katamso 2</p>
+      <div class="slot-machine">
+        <div class="reel" id="reel1"></div>
+        <div class="reel" id="reel2"></div>
+        <div class="reel" id="reel3"></div>
+        <div class="reel" id="reel4"></div>
+        <div class="reel" id="reel5"></div>
+      </div>
+
+      <div class="controls">
+        <button id="spin">SPIN</button>
+        <label><input type="checkbox" id="autoSpin"> Auto Spin</label>
+      </div>
     </div>
   </div>
 </div>
-
-<audio id="bgSound" src="assets/ambience.mp3" loop></audio>
 
 <script src="script.js"></script>
 </body>
