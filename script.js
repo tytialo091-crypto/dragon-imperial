@@ -1,4 +1,7 @@
 const symbols = ["tea_cup.png", "royal_fan.png", "gold_coin.png", "lantern_red.png", "jade_seal.png", "dragon_gold.png"];
+let balance = 100000, currentBet = 100, isSpinning = false, totalMultiplier = 0;
+let isPausedForBigWin = false, adminClicks = 0, winDifficulty = 0.7, forceWin = false;
+
 const sounds = {
     bgm: new Audio('assets/sounds/bgm.mp3'),
     spin: new Audio('assets/sounds/spin.mp3'),
@@ -6,14 +9,21 @@ const sounds = {
 };
 sounds.bgm.loop = true;
 
-let balance = 100000, currentBet = 100, isSpinning = false, totalMultiplier = 0;
-
 // Jackpot Berjalan
 setInterval(() => {
     let jp = parseInt(document.getElementById("jpDisplay").innerText.replace(/\./g, ''));
-    jp += Math.floor(Math.random() * 50);
+    jp += Math.floor(Math.random() * 80);
     document.getElementById("jpDisplay").innerText = jp.toLocaleString();
 }, 2000);
+
+// Admin Rahasia (Klik "SALDO" 5x)
+document.getElementById("triggerAdmin").addEventListener("click", () => {
+    adminClicks++;
+    if (adminClicks >= 5) {
+        document.getElementById("adminPanel").style.display = "block";
+        adminClicks = 0;
+    }
+});
 
 document.getElementById("startBtn").addEventListener("click", () => {
     document.getElementById("overlay").style.display = "none";
@@ -25,7 +35,7 @@ document.getElementById("startBtn").addEventListener("click", () => {
 function initGrid() {
     const grid = document.getElementById("grid");
     grid.innerHTML = "";
-    for(let i=0; i<30; i++) {
+    for(let i=0; i<20; i++) {
         const div = document.createElement("div");
         div.className = "grid-item";
         div.innerHTML = `<img src="assets/icons/${symbols[0]}">`;
@@ -34,26 +44,23 @@ function initGrid() {
 }
 
 async function startSpin() {
-    if (isSpinning) return;
-    if (balance < currentBet) return alert("Saldo Habis!");
-    
-    isSpinning = true;
-    balance -= currentBet;
-    totalMultiplier = 0;
+    if (isSpinning || balance < currentBet) return;
+    isSpinning = true; balance -= currentBet; totalMultiplier = 0;
     document.getElementById("multiplierTracker").style.display = "none";
     updateUI();
     
-    sounds.spin.currentTime = 0;
     sounds.spin.play().catch(() => {});
-
-    // Animasi Spin Awal
     let count = 0;
     const imgs = document.querySelectorAll(".grid-item img");
+    
     const timer = setInterval(() => {
-        imgs.forEach(img => img.src = `assets/icons/${symbols[Math.floor(Math.random() * 5)]}`);
+        imgs.forEach(img => {
+            let pool = (forceWin || balance < 500) ? symbols.slice(3) : symbols;
+            img.src = `assets/icons/${pool[Math.floor(Math.random() * pool.length)]}`;
+        });
         count += 100;
         if (count >= 1000) { clearInterval(timer); checkWin(); }
-    }, 100);
+    }, 80);
 }
 
 async function checkWin() {
@@ -66,40 +73,46 @@ async function checkWin() {
     let winAmount = 0, winSrcs = [];
 
     for (const [src, count] of Object.entries(counts)) {
-        if (rates[src] && count >= 8) {
+        if (rates[src] && count >= 6) { 
             winSrcs.push(src);
             winAmount += Math.floor(currentBet * (count * rates[src]));
         }
     }
 
-    if (winSrcs.length > 0) {
-        // Efek Multiplier Naga (Semburan Api)
-        if (Math.random() > 0.6) {
-            let mult = [2, 5, 8, 10, 20, 50][Math.floor(Math.random() * 6)];
-            totalMultiplier += mult;
+    if (winSrcs.length > 0 || forceWin) {
+        if (Math.random() > winDifficulty || forceWin) {
+            let multVal = [2, 5, 10, 25, 50, 100][Math.floor(Math.random() * 6)];
+            totalMultiplier += multVal;
             triggerDragonFire();
-            updateMultiplierTracker();
         }
 
-        // Animasi Pecah
         items.forEach(item => {
-            if (winSrcs.includes(item.querySelector("img").src.split('/').pop())) {
-                item.querySelector("img").classList.add("symbol-explode");
-            }
+            let src = item.querySelector("img").src.split('/').pop();
+            if (winSrcs.includes(src) || forceWin) item.querySelector("img").classList.add("symbol-explode");
         });
-        
+
         sounds.win.play().catch(() => {});
         await new Promise(r => setTimeout(r, 500));
 
-        // Tumble (Simbol Jatuh)
-        for (let col = 0; col < 6; col++) {
-            let colIndices = [col, col+6, col+12, col+18, col+24];
+        let winFinal = (winAmount || currentBet * 2) * (totalMultiplier || 1);
+        balance += winFinal;
+        document.getElementById("winDisplay").innerText = winFinal.toLocaleString();
+
+        if (winFinal >= currentBet * 10) {
+            isPausedForBigWin = true;
+            showBigWin(winFinal);
+            while(isPausedForBigWin) await new Promise(r => setTimeout(r, 100));
+        }
+
+        // Tumble 5x4
+        for (let col = 0; col < 5; col++) {
+            let colIndices = [col, col+5, col+10, col+15];
             let remain = [];
             colIndices.forEach(idx => {
                 const img = items[idx].querySelector("img");
                 if (!img.classList.contains("symbol-explode")) remain.push(img.src);
             });
-            let needed = 5 - remain.length;
+            let needed = 4 - remain.length;
             let finalCol = [...Array(needed).fill(0).map(() => `assets/icons/${symbols[Math.floor(Math.random() * 5)]}`), ...remain];
             colIndices.forEach((idx, i) => {
                 const img = items[idx].querySelector("img");
@@ -108,15 +121,11 @@ async function checkWin() {
                 if (i < needed) img.classList.add("symbol-falling");
             });
         }
-
-        let winFinal = winAmount * (totalMultiplier || 1);
-        balance += winFinal;
-        document.getElementById("winDisplay").innerText = winFinal.toLocaleString();
-        if (winFinal >= currentBet * 10) showBigWin(winFinal);
+        
+        forceWin = false;
         updateUI();
-
         await new Promise(r => setTimeout(r, 600));
-        return checkWin(); // Combo!
+        return checkWin();
     } else {
         isSpinning = false;
         if (document.getElementById("autoCheck").checked) setTimeout(startSpin, 1000);
@@ -124,35 +133,35 @@ async function checkWin() {
 }
 
 function triggerDragonFire() {
-    const f = document.createElement("div"); f.className = "fire-flash"; document.body.appendChild(f);
-    setTimeout(() => f.remove(), 300);
-    const d = document.querySelector(".dragon-bg"); d.classList.add("dragon-attack");
-    setTimeout(() => d.classList.remove("dragon-attack"), 500);
+    document.querySelector(".dragon-bg").classList.add("dragon-attack");
+    document.getElementById("multiplierTracker").style.display = "block";
+    document.getElementById("multValue").innerText = "x" + totalMultiplier;
+    setTimeout(() => document.querySelector(".dragon-bg").classList.remove("dragon-attack"), 500);
 }
 
-function updateMultiplierTracker() {
-    const t = document.getElementById("multiplierTracker");
-    t.style.display = "flex";
-    document.getElementById("multValue").innerText = "x" + totalMultiplier;
+function showBigWin(amt) {
+    sounds.win.play().catch(() => {}); // Suara win.mp3 diputar di Big Win
+    document.getElementById("bigWinAmount").innerText = amt.toLocaleString();
+    document.getElementById("bigWinOverlay").style.display = "flex";
+}
+
+function closeBigWin() {
+    document.getElementById("bigWinOverlay").style.display = "none";
+    isPausedForBigWin = false;
 }
 
 function updateUI() {
     document.getElementById("balance").innerText = balance.toLocaleString();
     document.getElementById("betDisplay").innerText = "BET: " + currentBet;
-    document.getElementById("buyCost").innerText = (currentBet * 100).toLocaleString();
 }
 
-function showBigWin(amt) {
-    document.getElementById("bigWinAmount").innerText = amt.toLocaleString();
-    document.getElementById("bigWinOverlay").style.display = "flex";
-    document.getElementById("coinCanvas").style.display = "block";
-    if (navigator.vibrate) navigator.vibrate([100, 50, 300]);
-}
-
-function closeBigWin() {
-    document.getElementById("bigWinOverlay").style.display = "none";
-    document.getElementById("coinCanvas").style.display = "none";
-}
-
-document.getElementById("spinBtn").addEventListener("click", startSpin);
 function changeBet(v) { if(!isSpinning) { currentBet = Math.max(10, currentBet + v); updateUI(); } }
+document.getElementById("spinBtn").addEventListener("click", startSpin);
+
+// Admin Logic
+function addBalance(amt) { balance += amt; updateUI(); }
+function cheatMaxWin() { forceWin = true; closeAdmin(); }
+function closeAdmin() { 
+    winDifficulty = parseFloat(document.getElementById("rtpSetting").value);
+    document.getElementById("adminPanel").style.display = "none"; 
+}
