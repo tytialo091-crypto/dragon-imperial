@@ -3,66 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Imperial 5x4 Cascade Final</title>
+    <title>Dragon Imperial Platinum</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="overlay">
-        <h1 class="shimmer-gold">DRAGON IMPERIAL</h1>
-        <button id="startBtn">MASUK GAME</button>
+    <div id="loginOverlay" class="modal-overlay">
+        <div class="login-box">
+            <h1 class="shimmer-gold">DRAGON LOGIN</h1>
+            <input type="text" id="usernameInput" placeholder="Username...">
+            <button class="primary-btn" onclick="handleLogin()">MULAI BERMAIN</button>
+        </div>
     </div>
 
     <div class="mobile-wrapper" id="mainGame" style="display:none;">
-        <div id="dragon-breath-overlay"></div>
-        <img src="assets/dragon.jpg" class="dragon-bg">
-        
         <div class="header">
-            <div class="jackpot-box">
-                <small>GRAND JACKPOT</small>
-                <div id="jpDisplay">Rp 5.000.000</div>
+            <div class="user-profile" onclick="toggleUserModal()">
+                <div class="profile-avatar">🐲</div>
+                <div class="profile-details">
+                    <div id="userNameDisplay">-</div>
+                    <div class="level-container">
+                        <span class="level-badge">LV.<b id="userLevel">1</b></span>
+                        <div class="exp-track"><div id="expFill"></div></div>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div id="multiplierTracker" class="multiplier-tag" style="display:none;">
-            <span id="multValue">x2</span>
+            <div class="top-btns">
+                <button onclick="togglePaytable()">ℹ️ PAY</button>
+                <button id="muteBtn" onclick="toggleMute()">🔊</button>
+            </div>
         </div>
 
         <div class="grid-container" id="grid"></div>
 
-        <div class="buy-feature-container" id="buyContainer">
-            <button id="buy-fs-btn" onclick="buyFreeSpin()">BUY FREE SPIN | Rp 1.500.000</button>
+        <div id="bigWinOverlay" class="big-win-overlay">
+            <h2 id="winTitle">BIG WIN!</h2>
+            <div id="countDisplay">Rp 0</div>
         </div>
 
-        <div class="dragon-container" id="dragon-side">
-            <img src="assets/dragon_side.png" style="width: 100%;">
+        <div id="maxwinOverlay" class="maxwin-overlay" style="display:none;">
+            <div id="fireContainer"></div>
+            <div class="maxwin-content">
+                <h1 class="maxwin-text">MAXWIN</h1>
+                <div id="maxwinCount">Rp 0</div>
+                <p>THE DRAGON HAS AWAKENED!</p>
+            </div>
         </div>
 
         <div class="footer">
             <div class="stats-row">
-                <div class="stat-item"><span id="triggerAdmin">SALDO</span><b id="balance">Rp 0</b></div>
-                <div class="stat-item"><span>MENANG</span><b id="winDisplay">Rp 0</b></div>
+                <div class="stat-item"><span>SALDO</span><b id="balance">Rp 0</b></div>
+                <div class="stat-item"><span>WIN</span><b id="winDisplay">Rp 0</b></div>
             </div>
             <div class="controls">
                 <div class="bet-adjuster">
-                    <button onclick="changeBet(-1000)">−</button>
-                    <span id="betDisplay">BET: Rp 1.000</span>
-                    <button onclick="changeBet(1000)">+</button>
+                    <button class="circle-btn" onclick="changeBet(-25000)">−</button>
+                    <span id="betDisplay">BET: 25k</span>
+                    <button class="circle-btn" onclick="changeBet(25000)">+</button>
+                    <button class="max-btn" onclick="setMaxBet()">MAX</button>
                 </div>
                 <div class="action-row">
-                    <div class="auto-wrap">
-                        <input type="checkbox" id="autoCheck">
-                        <label for="autoCheck">AUTO</label>
-                    </div>
-                    <button id="spinBtn">SPIN</button>
+                    <div class="auto-wrap"><input type="checkbox" id="autoCheck"> <label>AUTO</label></div>
+                    <button id="spinBtn" onclick="startSpin()">SPIN</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="win-celebration" class="win-popup" style="display:none;">
-        <div class="win-content">
-            <h1 id="win-label">BIG WIN</h1>
-            <h2 id="win-anim-amount">Rp 0</h2>
+    <div id="userModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <h3>PROFILE</h3>
+            <p>EXP: <b id="modalExp">0</b>/1000</p>
+            <button class="daily-btn" onclick="claimDaily()">CLAIM DAILY (50k)</button>
+            <button class="logout-btn" onclick="handleLogout()">LOGOUT</button>
+            <button class="close-btn" onclick="toggleUserModal()">TUTUP</button>
+        </div>
+    </div>
+
+    <div id="paytableModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content paytable">
+            <h3>IMPERIAL PAYTABLE</h3>
+            <div id="payList"></div>
+            <p style="font-size:10px; color:orange; margin-top:10px;">Bet > 100k Meningkatkan Luck Naga!</p>
+            <button class="close-btn" onclick="togglePaytable()">TUTUP</button>
         </div>
     </div>
 
