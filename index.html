@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Imperial 5x4 Final</title>
+    <title>Dragon Imperial 5x4 - IDR Edition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
         <div class="header">
             <div class="jackpot-box">
                 <small>GRAND JACKPOT</small>
-                <div id="jpDisplay">5.000.000</div>
+                <div id="jpDisplay">Rp5.000.000</div>
             </div>
         </div>
 
@@ -30,15 +30,15 @@
 
         <div class="footer">
             <div class="stats-row">
-                <div class="stat-item"><span id="triggerAdmin">SALDO</span><b id="balance">100.000</b></div>
-                <div class="stat-item"><span>MENANG</span><b id="winDisplay">0</b></div>
+                <div class="stat-item"><span id="triggerAdmin">SALDO</span><b id="balance">Rp0</b></div>
+                <div class="stat-item"><span>MENANG</span><b id="winDisplay">Rp0</b></div>
             </div>
             
             <div class="controls">
                 <div class="bet-adjuster">
-                    <button onclick="changeBet(-10)">−</button>
-                    <span id="betDisplay">BET: 100</span>
-                    <button onclick="changeBet(10)">+</button>
+                    <button onclick="changeBet(-1000)">−</button>
+                    <span id="betDisplay">BET: Rp1.000</span>
+                    <button onclick="changeBet(1000)">+</button>
                 </div>
                 <div class="action-row">
                     <div class="auto-wrap">
@@ -58,7 +58,7 @@
             <option value="0.3">GACOR (HIGH)</option>
             <option value="0.01">YOUTUBER (MAXWIN)</option>
         </select>
-        <button onclick="addBalance(500000)">+500K SALDO</button>
+        <button onclick="addBalance(1000000)">+Rp1 JUTA SALDO</button>
         <button onclick="cheatMaxWin()" style="background:gold; color:black;">NEXT SPIN MAXWIN</button>
         <button onclick="closeAdmin()" style="background:red; color:white;">TUTUP</button>
     </div>
@@ -66,7 +66,7 @@
     <div id="bigWinOverlay" class="modal-overlay">
         <div class="modal-content">
             <h1 class="shimmer-gold">BIG WIN!</h1>
-            <div id="bigWinAmount" class="win-text">0</div>
+            <div id="bigWinAmount" class="win-text">Rp0</div>
             <button class="collect-btn" onclick="closeBigWin()">COLLECT</button>
         </div>
     </div>
