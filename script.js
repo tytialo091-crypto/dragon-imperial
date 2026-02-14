@@ -2,10 +2,7 @@ const symbols = ["tea_cup.png", "royal_fan.png", "gold_coin.png", "lantern_red.p
 let balance = 100000, currentBet = 1000, isSpinning = false, totalMultiplier = 0;
 let isPausedForBigWin = false, adminClicks = 0, winDifficulty = 0.7, forceWin = false;
 
-// Format Rupiah
-const rp = new Intl.NumberFormat('id-ID', {
-    style: 'currency', currency: 'IDR', minimumFractionDigits: 0
-});
+const rp = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
 
 const sounds = {
     bgm: new Audio('assets/sounds/bgm.mp3'),
@@ -14,14 +11,14 @@ const sounds = {
 };
 sounds.bgm.loop = true;
 
-// Jackpot Berjalan (Rp)
+// Jackpot Berjalan
 setInterval(() => {
     let jpStr = document.getElementById("jpDisplay").innerText.replace(/[Rp.]/g, '');
-    let jp = parseInt(jpStr) + Math.floor(Math.random() * 500);
+    let jp = (parseInt(jpStr) || 5000000) + Math.floor(Math.random() * 500);
     document.getElementById("jpDisplay").innerText = rp.format(jp);
 }, 2000);
 
-// Admin Trigger (Klik SALDO 5x)
+// Klik SALDO 5x buat Admin
 document.getElementById("triggerAdmin").addEventListener("click", () => {
     adminClicks++;
     if (adminClicks >= 5) {
@@ -54,11 +51,10 @@ async function startSpin() {
     isSpinning = true; balance -= currentBet; totalMultiplier = 0;
     document.getElementById("multiplierTracker").style.display = "none";
     updateUI();
-    
     sounds.spin.play().catch(() => {});
+
     let count = 0;
     const imgs = document.querySelectorAll(".grid-item img");
-    
     const timer = setInterval(() => {
         imgs.forEach(img => {
             let pool = (forceWin || balance < 5000) ? symbols.slice(3) : symbols;
@@ -87,8 +83,7 @@ async function checkWin() {
 
     if (winSrcs.length > 0 || forceWin) {
         if (Math.random() > winDifficulty || forceWin) {
-            let multVal = [2, 5, 10, 25, 50, 100][Math.floor(Math.random() * 6)];
-            totalMultiplier += multVal;
+            totalMultiplier += [2, 5, 10, 25, 50, 100][Math.floor(Math.random() * 6)];
             triggerDragonFire();
         }
 
@@ -126,9 +121,7 @@ async function checkWin() {
                 if (i < needed) img.classList.add("symbol-falling");
             });
         }
-        
-        forceWin = false;
-        updateUI();
+        forceWin = false; updateUI();
         await new Promise(r => setTimeout(r, 600));
         return checkWin();
     } else {
@@ -138,10 +131,16 @@ async function checkWin() {
 }
 
 function triggerDragonFire() {
-    document.querySelector(".dragon-bg").classList.add("dragon-attack");
+    const dragon = document.querySelector(".dragon-bg");
+    const grid = document.getElementById("grid");
+    dragon.classList.add("dragon-attack");
+    grid.classList.add("shake-effect");
     document.getElementById("multiplierTracker").style.display = "block";
     document.getElementById("multValue").innerText = "x" + totalMultiplier;
-    setTimeout(() => document.querySelector(".dragon-bg").classList.remove("dragon-attack"), 500);
+    setTimeout(() => {
+        dragon.classList.remove("dragon-attack");
+        grid.classList.remove("shake-effect");
+    }, 600);
 }
 
 function showBigWin(amt) {
@@ -150,21 +149,14 @@ function showBigWin(amt) {
     document.getElementById("bigWinOverlay").style.display = "flex";
 }
 
-function closeBigWin() {
-    document.getElementById("bigWinOverlay").style.display = "none";
-    isPausedForBigWin = false;
-}
-
+function closeBigWin() { document.getElementById("bigWinOverlay").style.display = "none"; isPausedForBigWin = false; }
 function updateUI() {
     document.getElementById("balance").innerText = rp.format(balance);
     document.getElementById("betDisplay").innerText = "BET: " + rp.format(currentBet);
 }
-
-function changeBet(v) { if(!isSpinning) { currentBet = Math.max(100, currentBet + v); updateUI(); } }
+function changeBet(v) { if(!isSpinning) { currentBet = Math.max(1000, currentBet + v); updateUI(); } }
 document.getElementById("spinBtn").addEventListener("click", startSpin);
-
-// Admin Logic
-function addBalance(amt) { balance += amt; updateUI(); alert("Saldo ditambahkan!"); }
+function addBalance(amt) { balance += amt; updateUI(); }
 function cheatMaxWin() { forceWin = true; closeAdmin(); }
 function closeAdmin() { 
     winDifficulty = parseFloat(document.getElementById("rtpSetting").value);
