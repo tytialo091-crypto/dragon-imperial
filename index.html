@@ -13,7 +13,10 @@
     </div>
 
     <div class="mobile-wrapper" id="mainGame" style="display:none;">
+        <img src="assets/dragon.png" class="dragon-bg">
+        
         <div class="header">
+            <button id="muteBtn" class="mute-btn-top">🔊</button>
             <h2 class="shimmer">DRAGON IMPERIAL</h2>
             <div class="jackpot-box">
                 <small>GRAND JACKPOT</small>
@@ -28,7 +31,6 @@
                 <div class="stat-item"><span>SALDO</span><b id="balance">100,000</b></div>
                 <div class="stat-item"><span>MENANG</span><b id="winDisplay">0</b></div>
             </div>
-
             <div class="controls">
                 <div class="bet-adjuster">
                     <button onclick="changeBet(-10)">-</button>
@@ -38,11 +40,19 @@
                 <div class="action-row">
                     <label class="auto-btn"><input type="checkbox" id="autoCheck"> AUTO</label>
                     <button id="spinBtn">SPIN</button>
-                    <button id="muteBtn">🔊</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div id="jpOverlay" class="jp-overlay">
+        <div class="jp-content">
+            <h1 class="shimmer">GRAND JACKPOT!</h1>
+            <div id="jpAmount" class="jp-win-text">0</div>
+            <button onclick="closeJP()">AMBIL HADIAH</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
