@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Imperial Mobile</title>
+    <title>Dragon Imperial</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,9 +16,8 @@
         <img src="assets/dragon.png" class="dragon-bg">
         
         <div class="header">
-            <button id="infoBtn" class="info-btn-top">ℹ️</button>
-            <button id="muteBtn" class="mute-btn-top">🔊</button>
-            <h2 class="shimmer">DRAGON IMPERIAL</h2>
+            <button id="infoBtn" class="icon-btn">ℹ️</button>
+            <button id="muteBtn" class="icon-btn">🔊</button>
             <div class="jackpot-box">
                 <small>GRAND JACKPOT</small>
                 <div id="jpDisplay">5,000,000</div>
@@ -28,12 +27,13 @@
         <div class="grid-container" id="grid"></div>
 
         <div class="footer">
-            <button id="buySpinBtn" class="buy-spin-btn">BUY FREE SPIN <br> <span id="buyCost">10,000</span></button>
+            <button id="buySpinBtn" class="buy-spin-btn">BUY FREE SPIN | <span id="buyCost">10,000</span></button>
             
             <div class="stats-row">
                 <div class="stat-item"><span>SALDO</span><b id="balance">100,000</b></div>
                 <div class="stat-item"><span>MENANG</span><b id="winDisplay">0</b></div>
             </div>
+
             <div class="controls">
                 <div class="bet-adjuster">
                     <button onclick="changeBet(-10)">-</button>
@@ -48,23 +48,13 @@
         </div>
     </div>
 
-    <div id="jpOverlay" class="jp-overlay">
-        <div class="jp-content">
-            <h1 class="shimmer">GRAND JACKPOT!</h1>
-            <div id="jpAmount" class="jp-win-text">0</div>
-            <button onclick="closeJP()">AMBIL HADIAH</button>
-        </div>
-    </div>
-
-    <div id="infoOverlay" class="jp-overlay">
-        <div class="jp-content" style="background: rgba(20,0,0,0.95);">
+    <div id="infoOverlay" class="modal-overlay">
+        <div class="modal-content">
             <h3>PAYTABLE</h3>
-            <table class="pay-table">
-                <tr><td>🐉</td><td>3+ SCATTER = 10 FREE SPINS</td></tr>
-                <tr><td>💎</td><td>8+ JADE = x10.0</td></tr>
-                <tr><td>🏮</td><td>8+ LANTERN = x5.0</td></tr>
-                <tr><td>🪙</td><td>8+ COIN = x2.0</td></tr>
-            </table>
+            <div class="pay-item">🐉 3+ SCATTER = 10 FREE SPINS</div>
+            <div class="pay-item">💎 8+ JADE = x10.0</div>
+            <div class="pay-item">🏮 8+ LANTERN = x5.0</div>
+            <div class="pay-item">🪙 8+ COIN = x2.0</div>
             <button onclick="closeInfo()">TUTUP</button>
         </div>
     </div>
