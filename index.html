@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dragon Imperial - Gacor Tumble</title>
+    <title>Dragon Imperial 5x4 Final</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="coinCanvas"></canvas>
-
     <div id="overlay">
         <h1 class="shimmer-gold">DRAGON IMPERIAL</h1>
-        <p style="color: gold; margin-bottom: 20px;">AKTIFKAN SUARA UNTUK PENGALAMAN TERBAIK</p>
         <button id="startBtn">MASUK GAME</button>
     </div>
 
@@ -19,10 +16,6 @@
         <img src="assets/dragon.png" class="dragon-bg">
         
         <div class="header">
-            <div class="top-nav">
-                <button id="infoBtn" class="icon-btn">ℹ️ INFO</button>
-                <button id="muteBtn" class="icon-btn">🔊 SOUND</button>
-            </div>
             <div class="jackpot-box">
                 <small>GRAND JACKPOT</small>
                 <div id="jpDisplay">5.000.000</div>
@@ -36,11 +29,11 @@
         <div class="grid-container" id="grid"></div>
 
         <div class="footer">
-            <button id="buySpinBtn" class="buy-spin-btn">BUY FREE SPIN | <span id="buyCost">10.000</span></button>
             <div class="stats-row">
-                <div class="stat-item"><span class="label">SALDO</span><b id="balance">100.000</b></div>
-                <div class="stat-item"><span class="label">MENANG</span><b id="winDisplay">0</b></div>
+                <div class="stat-item"><span id="triggerAdmin">SALDO</span><b id="balance">100.000</b></div>
+                <div class="stat-item"><span>MENANG</span><b id="winDisplay">0</b></div>
             </div>
+            
             <div class="controls">
                 <div class="bet-adjuster">
                     <button onclick="changeBet(-10)">−</button>
@@ -58,10 +51,22 @@
         </div>
     </div>
 
+    <div id="adminPanel" class="admin-modal">
+        <h3>ADMIN SETTING</h3>
+        <select id="rtpSetting">
+            <option value="0.7">PELIT (NORMAL)</option>
+            <option value="0.3">GACOR (HIGH)</option>
+            <option value="0.01">YOUTUBER (MAXWIN)</option>
+        </select>
+        <button onclick="addBalance(500000)">+500K SALDO</button>
+        <button onclick="cheatMaxWin()" style="background:gold; color:black;">NEXT SPIN MAXWIN</button>
+        <button onclick="closeAdmin()" style="background:red; color:white;">TUTUP</button>
+    </div>
+
     <div id="bigWinOverlay" class="modal-overlay">
-        <div class="modal-content big-win-panel">
+        <div class="modal-content">
             <h1 class="shimmer-gold">BIG WIN!</h1>
-            <div id="bigWinAmount" class="win-amount-text">0</div>
+            <div id="bigWinAmount" class="win-text">0</div>
             <button class="collect-btn" onclick="closeBigWin()">COLLECT</button>
         </div>
     </div>
