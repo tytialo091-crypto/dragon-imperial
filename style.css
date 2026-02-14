@@ -3,63 +3,57 @@
 
 body { 
     background: #000; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    height: 100dvh; 
-    width: 100vw; 
-    overflow: hidden; 
+    display: flex; justify-content: center; align-items: center; 
+    height: 100vh; width: 100vw; overflow: hidden; 
 }
 
 .mobile-wrapper { 
-    width: 100vw; height: 100dvh; max-width: 480px; 
+    width: 100%; height: 100%; max-width: 480px; 
     background: url('assets/bg.jpg') no-repeat center center;
     background-size: cover;
-    position: relative; display: flex; flex-direction: column; padding: 15px; 
-    justify-content: space-between; z-index: 1;
+    position: relative; display: flex; flex-direction: column; 
+    justify-content: space-between; /* Membuat Header, Grid, Footer Tersebar Rapi */
+    padding: 20px 10px; z-index: 1;
 }
 
+/* NAGA PAS DI TENGAH */
 .dragon-bg { 
-    position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); 
-    width: 85%; opacity: 0.35; z-index: 0; pointer-events: none; transition: 0.4s;
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+    width: 90%; opacity: 0.4; z-index: 0; pointer-events: none; transition: 0.4s;
 }
 
-/* Semburan Naga Effect */
 .dragon-attack { 
     opacity: 1 !important; 
-    filter: brightness(2) drop-shadow(0 0 30px #ff0000) sepia(1) hue-rotate(-50deg); 
-    transform: translate(-50%, -50%) scale(1.15) !important; 
+    filter: brightness(2) drop-shadow(0 0 30px red); 
+    transform: translate(-50%, -50%) scale(1.1) !important; 
 }
-
-/* Shake Effect saat Semburan */
-@keyframes shake {
-    0% { transform: translate(1px, 1px); }
-    20% { transform: translate(-3px, 0px); }
-    40% { transform: translate(3px, 2px); }
-    60% { transform: translate(-3px, 1px); }
-    80% { transform: translate(3px, -1px); }
-    100% { transform: translate(0, 0); }
-}
-.shake-effect { animation: shake 0.5s; }
 
 .grid-container { 
     display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(4, 1fr);
-    gap: 4px; background: rgba(0,0,0,0.85); border: 2px solid gold; padding: 6px;
-    border-radius: 12px; height: 44vh; z-index: 10; margin: 0 auto; width: 100%;
+    gap: 5px; background: rgba(0,0,0,0.75); border: 2px solid gold; 
+    padding: 8px; border-radius: 12px; height: 42vh; 
+    z-index: 10; margin: 0 auto; width: 100%;
 }
 
-.grid-item img { width: 85%; height: 85%; object-fit: contain; }
+.grid-item img { width: 90%; height: 90%; object-fit: contain; }
 
-.footer { background: rgba(0,0,0,0.95); padding: 12px; border-radius: 20px 20px 0 0; border-top: 3px solid gold; z-index: 20; }
-.stat-item b { font-size: 14px; color: gold; display: block; }
+.footer { 
+    background: rgba(0,0,0,0.9); border-radius: 20px 20px 0 0; 
+    border-top: 3px solid gold; padding: 15px; z-index: 20;
+}
+
+.stats-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.stat-item b { font-size: 16px; color: gold; display: block; }
 .stat-item span { font-size: 10px; color: #aaa; cursor: pointer; }
 
-#spinBtn { width: 65px; height: 65px; border-radius: 50%; background: gold; color: #000; font-weight: bold; border: 4px solid #400; cursor: pointer; }
+#spinBtn { 
+    width: 75px; height: 75px; border-radius: 50%; 
+    background: radial-gradient(#fff, gold, #b8860b); 
+    color: #000; font-weight: bold; border: 4px solid #444; 
+    box-shadow: 0 0 15px gold; cursor: pointer;
+}
 
-/* Admin & Modal */
+/* Admin & Overlay */
 .admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #111; border: 2px solid red; padding: 20px; z-index: 1000; display: none; text-align: center; border-radius: 10px; width: 280px; }
 .admin-modal button { display: block; width: 100%; margin: 8px 0; padding: 10px; cursor: pointer; }
-
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; }
-.shimmer-gold { background: linear-gradient(90deg, #ffd700, #fff, #ffd700); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 2s infinite linear; }
-@keyframes shimmer { to { background-position: 200%; } }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; }
