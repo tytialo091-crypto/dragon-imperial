@@ -65,4 +65,4 @@ reel.appendChild(img);
 });
 
 if(autoSpin){setTimeout(spinReels,1500);}
-                                 }
+}
