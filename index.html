@@ -15,12 +15,26 @@
             <img src="assets/logo.png" alt="Logo" class="login-logo">
             <input type="text" id="usernameInput" placeholder="NAMA PEMAIN...">
             <button class="primary-btn" onclick="handleLogin()">MULAI BERMAIN</button>
-            <p class="version-tag">PLATINUM EDITION V1.0</p>
         </div>
     </div>
 
     <div class="mobile-wrapper" id="mainGame" style="display:none;">
         <img src="assets/icons/dragon_body.png" class="dragon" id="fsDragon">
+
+        <div id="autoPanel" class="auto-panel" style="display:none;">
+            <div class="auto-content">
+                <h4>PILIH AUTO SPIN</h4>
+                <div class="auto-grid">
+                    <button onclick="startAuto(5)">5x</button>
+                    <button onclick="startAuto(10)">10x</button>
+                    <button onclick="startAuto(20)">20x</button>
+                    <button onclick="startAuto(50)">50x</button>
+                    <button onclick="startAuto(100)">100x</button>
+                    <button onclick="startAuto(999999)">∞</button>
+                </div>
+                <button class="close-auto" onclick="toggleAutoPanel()">BATAL</button>
+            </div>
+        </div>
 
         <div class="header">
             <div class="level-container">
@@ -29,16 +43,10 @@
                         <span id="userLevel">LV. 1</span>
                         <small id="levelName">NEWBIE DRAGON</small>
                     </div>
-                    <div id="lvlRewardAnim" class="reward-pop" style="display:none;">+BONUS SALDO!</div>
+                    <div id="lvlRewardAnim" class="reward-pop" style="display:none;">+BONUS!</div>
                 </div>
                 <div class="xp-bar-bg"><div id="xpProgress" class="xp-bar-fill"></div></div>
             </div>
-            <button id="muteBtn" onclick="toggleMute()">🔊</button>
-        </div>
-
-        <div class="grand-jackpot-header">
-            <span>GRAND JACKPOT</span>
-            <h2 id="jackpotAmount">5,000,000</h2>
         </div>
 
         <div class="multiplier-container">
@@ -62,18 +70,19 @@
             </div>
 
             <div class="action-bar">
-                <button id="spinBtn" class="gold-btn-spin" onclick="startSpin()">SPIN</button>
+                <button id="spinBtn" class="gold-btn-spin" onclick="handleSpinClick()">
+                    <span id="spinText">SPIN</span>
+                </button>
                 <div class="bet-info-pill">
                     <span>BET</span>
                     <b id="betDisplay">25k</b>
                 </div>
+                <button class="black-btn" onclick="toggleAutoPanel()">AUTO</button>
                 <button class="black-btn" onclick="changeBet(25000)">+</button>
-                <button class="black-btn" onclick="toggleAuto()">AUTO</button>
             </div>
         </div>
 
         <div class="win-history-wrapper">
-            <div class="history-header"><span>RIWAYAT KEMENANGAN</span></div>
             <div id="historyList" class="history-list"></div>
         </div>
     </div>
